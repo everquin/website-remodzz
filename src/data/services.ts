@@ -1,0 +1,183 @@
+export interface Service {
+  slug: string;
+  title: string;
+  shortTitle: string;
+  icon: string;
+  description: string;
+  fullDescription: string;
+  features: string[];
+  images: string[];
+}
+
+export const services: Service[] = [
+  {
+    slug: 'kitchens',
+    title: 'Kitchen Remodeling',
+    shortTitle: 'Kitchens',
+    icon: '🍳',
+    description: 'Kitchen remodels are the surest investment in your home\'s value. From simple cabinetry updates to complex full redesigns with custom cabinetry and creative storage solutions.',
+    fullDescription: 'Your kitchen is the heart of your home, and a kitchen remodel is the surest investment in your home\'s value. Whether you\'re looking for a simple cabinet refresh or a complete gut-and-redesign, our team brings expertise in custom cabinetry, creative storage solutions, premium countertops, and modern appliance integration. We handle everything from layout planning and design to final installation.',
+    features: [
+      'Custom cabinetry with unlimited style, wood, and finish options',
+      'Creative storage solutions — our specialty',
+      'Countertop installation (granite, quartz, marble)',
+      'Appliance integration and electrical upgrades',
+      'In-house design with 3D renderings',
+      'Lighting design — task, ambient, and accent',
+      'Flooring, backsplash, and tile work',
+      'Plumbing fixtures and sink installation',
+    ],
+    images: ['kitchen-1.jpg', 'kitchen-2.jpg', 'kitchen-3.jpg'],
+  },
+  {
+    slug: 'bathrooms',
+    title: 'Bathroom Remodeling',
+    shortTitle: 'Bathrooms',
+    icon: '🛁',
+    description: 'Transform your bathroom into a personal oasis. Walk-in showers, spa features, premium fixtures, custom cabinetry, and ambient lighting create your place of serenity.',
+    fullDescription: 'A Place of Serenity & Relaxation — that\'s what your bathroom should be. We transform ordinary bathrooms into personal oases where you can unwind and recharge. From master bath suites with jetted tubs and body sprays to elegant powder rooms, we create spaces of ambient luxury using premium fixtures, custom cabinetry, and designer tile.',
+    features: [
+      'Walk-in showers with frameless glass enclosures',
+      'Jetted tubs and soaking tubs',
+      'Premium fixtures (Kohler, Moen, Delta)',
+      'Custom vanity cabinetry',
+      'Heated flooring and towel bars',
+      'Ceramic, porcelain, and natural stone tile',
+      'Recessed and ambient lighting design',
+      'Accessibility upgrades and grab bars',
+    ],
+    images: ['bathroom-1.jpg', 'bathroom-2.jpg', 'bathroom-3.jpg'],
+  },
+  {
+    slug: 'basements',
+    title: 'Basement Finishing & Remodeling',
+    shortTitle: 'Basements',
+    icon: '🏠',
+    description: 'Double your living space at roughly half the cost of an addition. Bedrooms, bathrooms, home theaters, game rooms, wet bars, and exercise areas.',
+    fullDescription: 'Double Your Living Space — an unfinished basement is untapped potential. At approximately half the cost of building an addition, a finished basement can add bedrooms, bathrooms, home theaters, game rooms, wet bars, exercise areas, and kids\' play spaces. Our in-house design team is critical for maximizing your basement layout and making the most of every square foot.',
+    features: [
+      'Bedroom and bathroom additions',
+      'Home theater and media rooms',
+      'Wet bar and entertainment areas',
+      'Game and recreation rooms',
+      'Home gym and exercise areas',
+      'Custom cabinetry and built-ins',
+      'Carpet, tile, and flooring installation',
+      'Egress windows and code compliance',
+    ],
+    images: ['basement-1.jpg', 'basement-2.jpg', 'basement-3.jpg'],
+  },
+  {
+    slug: 'additions',
+    title: 'Home Additions & Redesigns',
+    shortTitle: 'Additions',
+    icon: '🏗️',
+    description: 'You love your home — now make it bigger and better. Second stories, room extensions, layout modernization, and interior redesigns.',
+    fullDescription: 'You Love Your Home — Now You Can Make It Bigger & Better. When you\'ve outgrown your space but love your neighborhood, an addition is the answer. We specialize in second-story additions, rear and side extensions, kitchen bump-outs, and complete interior layout redesigns. Our team solves complex architectural challenges with solutions that are both functional and visually seamless with your existing home.',
+    features: [
+      'Second-story additions',
+      'Rear and side room extensions',
+      'Kitchen and great room additions',
+      'Interior layout redesign and modernization',
+      'Covered deck and porch additions',
+      'Structural engineering and permits',
+      'Seamless architectural matching',
+      'Full design and rendering services',
+    ],
+    images: ['addition-1.jpg', 'addition-2.jpg', 'addition-3.jpg'],
+  },
+  {
+    slug: 'decks-exteriors',
+    title: 'Decks, Patios & Exteriors',
+    shortTitle: 'Decks & Exteriors',
+    icon: '🌿',
+    description: 'Treated, cedar, or composite. Simple to spectacular. Plus patios, pergolas, gazebos, sunrooms, siding, roofing, and driveway paving.',
+    fullDescription: 'From the simple to the spectacular, from single-level to multi-level — we design and build outdoor living spaces worthy of enjoying. Whether you want a treated lumber deck, premium cedar, or low-maintenance composite, we deliver quality craftsmanship. We also handle stone patios, pergolas, gazebos, sunrooms, season room conversions, siding, roofing, and complete exterior improvements.',
+    features: [
+      'Treated, cedar, and composite decking',
+      'Multi-level and wraparound designs',
+      'Stone and paver patios',
+      'Cedar pergolas and gazebos',
+      'Built-in grills and outdoor kitchens',
+      'Sunroom and season room installations',
+      'Siding, roofing, and gutter systems',
+      'Driveway paving and exterior lighting',
+    ],
+    images: ['deck-1.jpg', 'deck-2.jpg', 'deck-3.jpg', 'exterior-1.jpg', 'exterior-2.jpg', 'exterior-3.jpg'],
+  },
+  {
+    slug: 'new-homes',
+    title: 'New Home Construction',
+    shortTitle: 'New Homes',
+    icon: '🏡',
+    description: 'Custom new homes built to your specifications with energy-efficient designs. Site-built, panelized, and modular construction.',
+    fullDescription: 'Building a new home is one of life\'s most exciting endeavors. We bring experience in three construction methods — site-built, panelized, and modular — giving you options that fit your timeline, budget, and design preferences. Every home is custom-built to your specifications with energy-efficient designs and quality construction that stands the test of time.',
+    features: [
+      'Site-built custom home construction',
+      'Panelized home construction',
+      'Modular home construction',
+      'Energy Star certified building practices',
+      'Custom floor plan design',
+      'Full permit management',
+      'Landscaping and finish grading',
+      'Complete project management from start to finish',
+    ],
+    images: ['newhome-1.jpg', 'newhome-2.jpg', 'newhome-3.jpg'],
+  },
+  {
+    slug: 'commercial',
+    title: 'Commercial Services',
+    shortTitle: 'Commercial',
+    icon: '🏢',
+    description: 'Tenant build-outs, property maintenance, and project management for commercial clients who want big-firm experience with personal attention.',
+    fullDescription: 'We cater to smaller commercial clientele who want the experience of a large firm with the personalization of a dedicated partner. From tenant build-outs and office renovations to ongoing property maintenance and project management, we bring the same detail-oriented approach to commercial work that defines our residential projects.',
+    features: [
+      'Tenant build-outs and fit-ups',
+      'Office and retail renovations',
+      'Property maintenance programs',
+      'Project management services',
+      'ADA compliance upgrades',
+      'Commercial HVAC and electrical',
+      'Code compliance and permitting',
+      'Multi-site coordination',
+    ],
+    images: [],
+  },
+  {
+    slug: 'handyman',
+    title: 'Handyman & Small Projects',
+    shortTitle: 'Handyman',
+    icon: '🔧',
+    description: 'Professional services for all home maintenance. Painting, carpentry, electrical, HVAC, plumbing, window replacement, flooring, and lighting.',
+    fullDescription: 'Not every project requires a full renovation. Our handyman services cover all the smaller jobs that keep your home in top shape — from painting and carpentry to electrical, HVAC, plumbing, window replacement, floor refinishing, and lighting upgrades. Every project, no matter the size, receives the same professional attention to detail.',
+    features: [
+      'Interior and exterior painting',
+      'Finish carpentry and trim work',
+      'Electrical repairs and upgrades',
+      'Plumbing repairs and fixture installation',
+      'HVAC maintenance and repairs',
+      'Window and door replacement',
+      'Flooring refinishing and installation',
+      'Lighting upgrades and installation',
+    ],
+    images: [],
+  },
+];
+
+export const additionalServices = [
+  {
+    title: 'Design Services',
+    icon: '📐',
+    description: 'In-house professional design with detailed layouts, custom renderings, and visual views. See your project come to life before construction begins.',
+  },
+  {
+    title: 'Home Theaters',
+    icon: '🎬',
+    description: 'Custom entertainment centers and dedicated home theater rooms with professional audio/video, soundproofing, and ambient lighting.',
+  },
+  {
+    title: 'Drone Services',
+    icon: '📸',
+    description: 'Professional drone photography and videography for project documentation, real estate, and aerial perspectives.',
+  },
+];

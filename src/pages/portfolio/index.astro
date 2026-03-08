@@ -1,0 +1,35 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import PortfolioGrid from '../../components/PortfolioGrid.astro';
+import { portfolioItems, categories } from '../../data/portfolio';
+---
+
+<Layout title="Portfolio" description="Browse our gallery of completed remodeling projects across Northern Illinois and Southern Wisconsin — kitchens, bathrooms, basements, additions, decks, and new homes.">
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/">Home</a> <span>/</span> <span>Portfolio</span>
+      </div>
+      <h1>Project <span class="text-primary">Portfolio</span></h1>
+      <p>Browse our gallery of completed projects. Every project receives comprehensive before, during, and after documentation.</p>
+    </div>
+  </section>
+
+  <section class="section bg-darker">
+    <div class="container-wide">
+      <PortfolioGrid items={portfolioItems} categories={categories} showFilters={true} />
+    </div>
+  </section>
+
+  <section class="section-sm bg-dark">
+    <div class="container text-center">
+      <h2 data-animate>Like What You See?</h2>
+      <p style="color: var(--text); max-width: 500px; margin: 12px auto 28px;" data-animate>Let's discuss how we can transform your space.</p>
+      <div data-animate>
+        <a href="/contact" class="btn btn-primary btn-lg">Schedule a Consult</a>
+      </div>
+    </div>
+  </section>
+
+</Layout>

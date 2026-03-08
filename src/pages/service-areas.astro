@@ -1,0 +1,141 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const illinois = [
+  { county: 'Lake County', cities: ['Libertyville', 'Highland Park', 'Gurnee', 'Grayslake', 'Green Oaks', 'Lake Zurich', 'Antioch', 'Fox Lake', 'Spring Grove', 'Lincolnshire', 'Northfield', 'Mundelein', 'Vernon Hills', 'Waukegan', 'North Chicago', 'Lake Forest', 'Lake Bluff', 'Lindenhurst', 'Round Lake'] },
+  { county: 'Cook County', cities: ['Arlington Heights', 'Palatine', 'Schaumburg', 'Northbrook', 'Wilmette', 'Evanston', 'Skokie', 'Des Plaines', 'Park Ridge'] },
+  { county: 'McHenry County', cities: ['Crystal Lake', 'McHenry', 'Woodstock', 'Algonquin', 'Huntley', 'Richmond', 'Marengo'] },
+];
+
+const wisconsin = [
+  { county: 'Walworth County', cities: ['Lake Geneva', 'Delavan', 'Elkhorn', 'Whitewater'] },
+  { county: 'Kenosha County', cities: ['Kenosha', 'Pleasant Prairie', 'Twin Lakes', 'Bristol', 'Salem'] },
+  { county: 'Milwaukee County', cities: ['Milwaukee', 'South Milwaukee', 'West Allis', 'Wauwatosa', 'Greenfield'] },
+  { county: 'Racine County', cities: ['Racine', 'Mount Pleasant', 'Burlington', 'Caledonia'] },
+];
+---
+
+<Layout title="Service Areas" description="REMODzz serves Northern Illinois (Lake, Cook, McHenry Counties) and Southern Wisconsin (Walworth, Kenosha, Milwaukee, Racine Counties).">
+
+  <section class="page-hero">
+    <div class="container">
+      <div class="breadcrumb">
+        <a href="/">Home</a> <span>/</span> <span>Service Areas</span>
+      </div>
+      <h1>Service <span class="text-primary">Areas</span></h1>
+      <p>Proudly serving communities across Northern Illinois and Southern Wisconsin.</p>
+    </div>
+  </section>
+
+  <section class="section bg-darker">
+    <div class="container">
+      <div class="areas-intro" data-animate>
+        <div class="areas-intro-content">
+          <h2>We're Local. We're Here to Stay.</h2>
+          <p>We've been serving the Northern Illinois and Southern Wisconsin communities for over two decades. Our deep roots in the area mean we understand local building codes, climate considerations, and the unique character of neighborhoods from Lake County to Kenosha County.</p>
+        </div>
+        <div class="areas-cta card">
+          <div style="font-size: 2.5rem; margin-bottom: 8px;">📞</div>
+          <h3>Call Us Today</h3>
+          <a href="tel:8476037614" style="font-size: 1.5rem; font-weight: 700; color: var(--primary); display: block; margin: 8px 0;">847.603.7614</a>
+          <p style="color: var(--text-light); font-size: 0.9rem;">Mon-Fri: 8am-5pm | Sat: By appt.</p>
+        </div>
+      </div>
+
+      <!-- Illinois -->
+      <div style="margin-top: 60px;">
+        <h2 data-animate style="margin-bottom: 24px;">🏠 Illinois</h2>
+        <div class="grid grid-3">
+          {illinois.map(area => (
+            <div class="area-card card" data-animate>
+              <h4>{area.county}</h4>
+              <ul class="city-list">
+                {area.cities.map(city => (
+                  <li>
+                    <span class="city-check">✓</span>
+                    {city}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Wisconsin -->
+      <div style="margin-top: 60px;">
+        <h2 data-animate style="margin-bottom: 24px;">🏠 Wisconsin</h2>
+        <div class="grid grid-4">
+          {wisconsin.map(area => (
+            <div class="area-card card" data-animate>
+              <h4>{area.county}</h4>
+              <ul class="city-list">
+                {area.cities.map(city => (
+                  <li>
+                    <span class="city-check">✓</span>
+                    {city}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm bg-dark">
+    <div class="container text-center">
+      <h2 data-animate>Don't See Your City?</h2>
+      <p style="color: var(--text); max-width: 500px; margin: 12px auto 28px;" data-animate>We may still be able to help. Contact us to discuss your project location.</p>
+      <div data-animate>
+        <a href="/contact" class="btn btn-primary btn-lg">Contact Us</a>
+      </div>
+    </div>
+  </section>
+
+</Layout>
+
+<style>
+  .areas-intro {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  .areas-intro-content h2 {
+    font-size: 1.8rem;
+    margin-bottom: 16px;
+  }
+  .areas-intro-content p {
+    color: var(--text);
+    font-size: 1.05rem;
+    line-height: 1.7;
+  }
+  .areas-cta {
+    text-align: center;
+  }
+  .areas-cta h3 { font-size: 1.1rem; }
+  .area-card h4 {
+    font-size: 1.1rem;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .city-list li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 0;
+    font-size: 0.92rem;
+    color: var(--text);
+  }
+  .city-check {
+    color: var(--primary);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  @media (max-width: 900px) {
+    .areas-intro { grid-template-columns: 1fr; }
+  }
+</style>

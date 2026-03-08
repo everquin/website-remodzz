@@ -1,0 +1,172 @@
+---
+import { services } from '../data/services';
+---
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="/" class="footer-logo">
+          <img src="/images/logo.png" alt="REMODzz" width="32" height="32">
+          <span>REMODzz</span>
+        </a>
+        <p>Everquin, LLC dba REMODzz — Premier remodeling and new home construction serving Northern Illinois and Southern Wisconsin.</p>
+        <a href="tel:8476037614" class="footer-phone">847.603.7614</a>
+        <div class="footer-social">
+          <a href="#" aria-label="Facebook" class="social-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z"/></svg>
+          </a>
+          <a href="#" aria-label="YouTube" class="social-link">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M23 12s0-3.85-.46-5.58a2.79 2.79 0 00-1.96-1.96C18.85 4 12 4 12 4s-6.85 0-8.58.46A2.79 2.79 0 001.46 6.42C1 8.15 1 12 1 12s0 3.85.46 5.58a2.79 2.79 0 001.96 1.96C5.15 20 12 20 12 20s6.85 0 8.58-.46a2.79 2.79 0 001.96-1.96C23 15.85 23 12 23 12zM10 15.5v-7l6 3.5-6 3.5z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <div class="footer-col">
+        <h5>Services</h5>
+        <ul>
+          {services.slice(0, 6).map(s => (
+            <li><a href={`/services/${s.slug}`}>{s.shortTitle}</a></li>
+          ))}
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>More Services</h5>
+        <ul>
+          {services.slice(6).map(s => (
+            <li><a href={`/services/${s.slug}`}>{s.shortTitle}</a></li>
+          ))}
+          <li><a href="/services">Design Services</a></li>
+          <li><a href="/services">Home Theaters</a></li>
+          <li><a href="/portfolio">Portfolio</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="/about">About Us</a></li>
+          <li><a href="/about#advantages">Why Choose Us</a></li>
+          <li><a href="/service-areas">Service Areas</a></li>
+          <li><a href="/contact">Contact</a></li>
+          <li><a href="/contact">Get Estimate</a></li>
+        </ul>
+        <div class="footer-badges">
+          <span class="footer-badge">⚡ Energy Star Partner</span>
+          <span class="footer-badge">❤️ Habitat for Humanity</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <p>&copy; {new Date().getFullYear()} Everquin, LLC dba REMODzz — All Rights Reserved</p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    background: var(--darkest);
+    padding: 80px 0 30px;
+    border-top: 1px solid var(--border);
+  }
+  .footer-grid {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1fr;
+    gap: 40px;
+  }
+  .footer-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 16px;
+  }
+  .footer-logo img { border-radius: 6px; }
+  .footer-brand p {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .footer-phone {
+    display: inline-block;
+    color: var(--primary);
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+  .footer-social {
+    display: flex;
+    gap: 12px;
+  }
+  .social-link {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--border-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    transition: all 0.2s;
+  }
+  .social-link:hover {
+    color: var(--primary);
+    border-color: var(--primary-border);
+    background: var(--primary-glow);
+  }
+  .footer-col h5 {
+    font-size: 0.95rem;
+    margin-bottom: 16px;
+    color: var(--white);
+  }
+  .footer-col ul li {
+    margin-bottom: 8px;
+  }
+  .footer-col ul li a {
+    color: var(--text-light);
+    font-size: 0.9rem;
+    transition: color 0.2s;
+  }
+  .footer-col ul li a:hover {
+    color: var(--primary);
+  }
+  .footer-badges {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .footer-badge {
+    font-size: 0.8rem;
+    color: var(--text-light);
+  }
+  .footer-bottom {
+    border-top: 1px solid var(--border);
+    margin-top: 50px;
+    padding-top: 24px;
+    text-align: center;
+  }
+  .footer-bottom p {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+  }
+  @media (max-width: 900px) {
+    .footer-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  @media (max-width: 600px) {
+    .footer-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

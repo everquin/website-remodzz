@@ -1,0 +1,284 @@
+---
+import type { PortfolioItem } from '../data/portfolio';
+
+interface Props {
+  items: PortfolioItem[];
+  categories?: { slug: string; label: string }[];
+  showFilters?: boolean;
+}
+
+const { items, categories = [], showFilters = true } = Astro.props;
+---
+
+{showFilters && categories.length > 0 && (
+  <div class="portfolio-filters" id="portfolioFilters">
+    {categories.map(cat => (
+      <button
+        class:list={['filter-btn', { active: cat.slug === 'all' }]}
+        data-filter={cat.slug}
+      >
+        {cat.label}
+      </button>
+    ))}
+  </div>
+)}
+
+<div class="portfolio-grid" id="portfolioGrid">
+  {items.map(item => (
+    <div class="portfolio-item" data-category={item.category} data-animate>
+      <img
+        src={`/images/portfolio/${item.image}`}
+        alt={`${item.title} - ${item.location}`}
+        loading="lazy"
+        width="400"
+        height="300"
+      />
+      <div class="portfolio-overlay">
+        <div>
+          <h5>{item.title}</h5>
+          <span>{item.location}</span>
+        </div>
+      </div>
+    </div>
+  ))}
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox">
+  <button class="lightbox-close" id="lightboxClose" aria-label="Close lightbox">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+    </svg>
+  </button>
+  <button class="lightbox-nav lightbox-prev" id="lightboxPrev" aria-label="Previous">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <polyline points="15 18 9 12 15 6"/>
+    </svg>
+  </button>
+  <img id="lightboxImg" src="" alt="">
+  <button class="lightbox-nav lightbox-next" id="lightboxNext" aria-label="Next">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <polyline points="9 18 15 12 9 6"/>
+    </svg>
+  </button>
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<style>
+  .portfolio-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 40px;
+  }
+  .filter-btn {
+    background: var(--card);
+    color: var(--text-light);
+    border: 1px solid var(--border-light);
+    padding: 9px 22px;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all 0.25s;
+    font-size: 0.88rem;
+    font-family: var(--font-body);
+    font-weight: 500;
+  }
+  .filter-btn:hover {
+    color: var(--white);
+    border-color: rgba(255,255,255,0.2);
+  }
+  .filter-btn.active {
+    background: var(--primary);
+    color: var(--darkest);
+    border-color: var(--primary);
+  }
+
+  .portfolio-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px;
+  }
+  .portfolio-item {
+    position: relative;
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    cursor: pointer;
+    background: var(--card);
+  }
+  .portfolio-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+  }
+  .portfolio-item:hover img { transform: scale(1.08); }
+  .portfolio-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(transparent 40%, rgba(10, 10, 10, 0.9));
+    display: flex;
+    align-items: flex-end;
+    padding: 24px;
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+  .portfolio-item:hover .portfolio-overlay { opacity: 1; }
+  .portfolio-overlay h5 {
+    font-size: 1rem;
+    margin-bottom: 2px;
+    color: var(--white);
+  }
+  .portfolio-overlay span {
+    font-size: 0.82rem;
+    color: var(--primary);
+  }
+
+  /* Lightbox */
+  .lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 2000;
+    align-items: center;
+    justify-content: center;
+    padding: 60px;
+  }
+  .lightbox.active { display: flex; }
+  .lightbox img {
+    max-width: 85%;
+    max-height: 80vh;
+    object-fit: contain;
+    border-radius: var(--radius);
+  }
+  .lightbox-close {
+    position: absolute;
+    top: 20px;
+    right: 24px;
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    z-index: 2001;
+  }
+  .lightbox-close:hover { background: rgba(255,255,255,0.2); }
+  .lightbox-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.1);
+    border: none;
+    color: var(--white);
+    cursor: pointer;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+  }
+  .lightbox-nav:hover { background: rgba(255,255,255,0.2); }
+  .lightbox-prev { left: 20px; }
+  .lightbox-next { right: 20px; }
+  .lightbox-caption {
+    position: absolute;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: var(--white);
+    text-align: center;
+    font-size: 0.95rem;
+    opacity: 0.8;
+  }
+
+  @media (max-width: 640px) {
+    .portfolio-grid {
+      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+    .lightbox { padding: 20px; }
+    .lightbox img { max-width: 95%; }
+  }
+</style>
+
+<script>
+  let currentIndex = 0;
+  let visibleItems: HTMLElement[] = [];
+
+  function getVisibleItems(): HTMLElement[] {
+    return Array.from(document.querySelectorAll<HTMLElement>('.portfolio-item'))
+      .filter(el => el.style.display !== 'none');
+  }
+
+  function openLightbox(index: number) {
+    visibleItems = getVisibleItems();
+    currentIndex = index;
+    const item = visibleItems[currentIndex];
+    if (!item) return;
+    const img = item.querySelector('img') as HTMLImageElement;
+    const overlay = item.querySelector('.portfolio-overlay');
+    const lbImg = document.getElementById('lightboxImg') as HTMLImageElement;
+    const lbCaption = document.getElementById('lightboxCaption')!;
+    lbImg.src = img.src;
+    lbCaption.textContent = overlay?.textContent?.trim() || '';
+    document.getElementById('lightbox')!.classList.add('active');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeLightbox() {
+    document.getElementById('lightbox')!.classList.remove('active');
+    document.body.style.overflow = '';
+  }
+
+  function navigate(dir: number) {
+    currentIndex = (currentIndex + dir + visibleItems.length) % visibleItems.length;
+    openLightbox(currentIndex);
+  }
+
+  // Click handlers on portfolio items
+  document.querySelectorAll('.portfolio-item').forEach((item, i) => {
+    item.addEventListener('click', () => {
+      const vis = getVisibleItems();
+      const idx = vis.indexOf(item as HTMLElement);
+      openLightbox(idx >= 0 ? idx : 0);
+    });
+  });
+
+  document.getElementById('lightboxClose')?.addEventListener('click', closeLightbox);
+  document.getElementById('lightboxPrev')?.addEventListener('click', () => navigate(-1));
+  document.getElementById('lightboxNext')?.addEventListener('click', () => navigate(1));
+  document.getElementById('lightbox')?.addEventListener('click', (e) => {
+    if (e.target === document.getElementById('lightbox')) closeLightbox();
+  });
+  document.addEventListener('keydown', (e) => {
+    if (!document.getElementById('lightbox')?.classList.contains('active')) return;
+    if (e.key === 'Escape') closeLightbox();
+    if (e.key === 'ArrowLeft') navigate(-1);
+    if (e.key === 'ArrowRight') navigate(1);
+  });
+
+  // Portfolio filtering
+  document.querySelectorAll('.filter-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const filter = btn.getAttribute('data-filter');
+      document.querySelectorAll<HTMLElement>('.portfolio-item').forEach(item => {
+        if (filter === 'all' || item.dataset.category === filter) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+</script>

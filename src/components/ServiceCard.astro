@@ -1,0 +1,51 @@
+---
+interface Props {
+  title: string;
+  icon: string;
+  description: string;
+  href?: string;
+}
+
+const { title, icon, description, href } = Astro.props;
+const Tag = href ? 'a' : 'div';
+---
+
+<Tag href={href} class="service-card card card-accent" data-animate>
+  <div class="service-icon">{icon}</div>
+  <h4>{title}</h4>
+  <p>{description}</p>
+  {href && <span class="service-arrow">→</span>}
+</Tag>
+
+<style>
+  .service-card {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+  .service-icon {
+    font-size: 2rem;
+    margin-bottom: 16px;
+    display: block;
+    line-height: 1;
+  }
+  .service-card h4 {
+    font-size: 1.15rem;
+    margin-bottom: 10px;
+    transition: color 0.2s;
+  }
+  .service-card p {
+    font-size: 0.92rem;
+    color: var(--text-light);
+    line-height: 1.6;
+  }
+  .service-arrow {
+    display: inline-block;
+    margin-top: 12px;
+    color: var(--primary);
+    font-size: 1.1rem;
+    transition: transform 0.2s;
+  }
+  a.service-card:hover h4 { color: var(--primary); }
+  a.service-card:hover .service-arrow { transform: translateX(4px); }
+</style>
