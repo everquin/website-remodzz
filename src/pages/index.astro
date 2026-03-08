@@ -20,9 +20,10 @@ const featuredPortfolio = portfolioItems.filter(p =>
     </div>
     <div class="container hero-content">
       <div class="hero-text">
-        <span class="badge animate-fade-up">Northern Illinois & Southern Wisconsin</span>
-        <h1 class="animate-fade-up delay-1">You Know You<br><span class="text-primary">Want To</span></h1>
-        <p class="animate-fade-up delay-2">Transform your home with the region's most trusted construction experts. From kitchen remodels to complete new home construction — on schedule and on budget.</p>
+        <img src="/images/remodzz-logo-full.png" alt="REMODzz" class="hero-logo animate-fade-up" />
+        <span class="badge animate-fade-up delay-1">Northern Illinois & Southern Wisconsin</span>
+        <h1 class="animate-fade-up delay-2">You Know You<br><span class="text-primary">Want To</span></h1>
+        <p class="animate-fade-up delay-3">Transform your home with the region's most trusted construction experts. From kitchen remodels to complete new home construction — on schedule and on budget.</p>
         <div class="hero-actions animate-fade-up delay-3">
           <a href="/contact" class="btn btn-primary btn-lg">Schedule a Consult</a>
           <a href="/portfolio" class="btn btn-outline btn-lg">View Our Work</a>
@@ -188,6 +189,12 @@ const featuredPortfolio = portfolioItems.filter(p =>
   }
   .hero-text {
     max-width: 680px;
+  }
+  .hero-logo {
+    width: clamp(280px, 45vw, 480px);
+    height: auto;
+    margin-bottom: 24px;
+    filter: drop-shadow(0 2px 20px rgba(0,0,0,0.6));
   }
   .hero h1 {
     font-size: clamp(2.8rem, 6vw, 4.5rem);
