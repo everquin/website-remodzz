@@ -27,7 +27,7 @@ export const services: Service[] = [
       'Flooring, backsplash, and tile work',
       'Plumbing fixtures and sink installation',
     ],
-    images: ['kitchen-1.jpg', 'kitchen-2.jpg', 'kitchen-3.jpg'],
+    images: ['kitchen-libertyville-after.jpg', 'kitchen-grayslake-after1.jpg', 'kitchen-longgrove-after.jpg'],
   },
   {
     slug: 'bathrooms',
@@ -46,7 +46,7 @@ export const services: Service[] = [
       'Recessed and ambient lighting design',
       'Accessibility upgrades and grab bars',
     ],
-    images: ['bathroom-1.jpg', 'bathroom-2.jpg', 'bathroom-3.jpg'],
+    images: ['bathroom-foxlake-after1.jpg', 'bathroom-foxlake-after2.jpg', 'bathroom-foxlake-before.jpg'],
   },
   {
     slug: 'basements',
@@ -65,7 +65,7 @@ export const services: Service[] = [
       'Carpet, tile, and flooring installation',
       'Egress windows and code compliance',
     ],
-    images: ['basement-1.jpg', 'basement-2.jpg', 'basement-3.jpg'],
+    images: ['basement-greenoaks-after1.jpg', 'basement-greenoaks-after2.jpg', 'basement-highlandpark-after1.jpg'],
   },
   {
     slug: 'additions',
@@ -84,7 +84,7 @@ export const services: Service[] = [
       'Seamless architectural matching',
       'Full design and rendering services',
     ],
-    images: ['addition-1.jpg', 'addition-2.jpg', 'addition-3.jpg'],
+    images: ['addition-libertyville-after.jpg', 'addition-highlandpark-render.jpg', 'addition-libertyville-render.jpg'],
   },
   {
     slug: 'decks-exteriors',
@@ -103,7 +103,7 @@ export const services: Service[] = [
       'Siding, roofing, and gutter systems',
       'Driveway paving and exterior lighting',
     ],
-    images: ['deck-1.jpg', 'deck-2.jpg', 'deck-3.jpg', 'exterior-1.jpg', 'exterior-2.jpg', 'exterior-3.jpg'],
+    images: ['deck-greenoaks-after.jpg', 'deck-libertyville-after.jpg', 'deck-grayslake-after.jpg'],
   },
   {
     slug: 'new-homes',
@@ -122,7 +122,7 @@ export const services: Service[] = [
       'Landscaping and finish grading',
       'Complete project management from start to finish',
     ],
-    images: ['newhome-1.jpg', 'newhome-2.jpg', 'newhome-3.jpg'],
+    images: ['newhome-milwaukee-after.jpg', 'newhome-milwaukee-during.jpg', 'newhome-smilwaukee-after.jpg'],
   },
   {
     slug: 'commercial',

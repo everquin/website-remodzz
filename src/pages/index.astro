@@ -5,7 +5,10 @@ import PortfolioGrid from '../components/PortfolioGrid.astro';
 import { services, additionalServices } from '../data/services';
 import { portfolioItems, categories } from '../data/portfolio';
 
-const featuredPortfolio = portfolioItems.slice(0, 9);
+// Pick a mix of before/after pairs and cover shots for the homepage
+const featuredPortfolio = portfolioItems.filter(p =>
+  p.imageLabel && (p.imageLabel.includes('After') || p.imageLabel.includes('Cover') || p.imageLabel.includes('Render') || p.imageLabel.includes('Completed'))
+).slice(0, 12);
 ---
 
 <Layout title="Home" description="REMODzz — Premier remodeling and new home construction serving Northern Illinois & Southern Wisconsin. Kitchens, bathrooms, basements, additions, decks, new homes, handyman.">
@@ -120,7 +123,7 @@ const featuredPortfolio = portfolioItems.slice(0, 9);
           <a href="/about#advantages" class="btn btn-outline" style="margin-top: 24px;">Learn More</a>
         </div>
         <div class="why-image" data-animate>
-          <img src="/images/portfolio/featured-IMG_5744.jpg" alt="Quality craftsmanship by REMODzz" loading="lazy">
+          <img src="/images/portfolio/deck-greenoaks-after.jpg" alt="Quality craftsmanship by REMODzz" loading="lazy">
         </div>
       </div>
     </div>

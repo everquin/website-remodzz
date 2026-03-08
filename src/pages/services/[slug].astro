@@ -14,18 +14,18 @@ export function getStaticPaths() {
 const { service } = Astro.props;
 
 // Get portfolio items matching this service category
-const categoryMap: Record<string, string> = {
-  'kitchens': 'kitchens',
-  'bathrooms': 'bathrooms',
-  'basements': 'basements',
-  'additions': 'additions',
-  'decks-exteriors': 'decks',
-  'new-homes': 'new-homes',
-  'commercial': '',
-  'handyman': '',
+const categoryMap: Record<string, string[]> = {
+  'kitchens': ['kitchens'],
+  'bathrooms': ['bathrooms'],
+  'basements': ['basements', 'theaters'],
+  'additions': ['additions'],
+  'decks-exteriors': ['decks'],
+  'new-homes': ['new-homes'],
+  'commercial': [],
+  'handyman': ['flooring'],
 };
-const cat = categoryMap[service.slug] || '';
-const servicePortfolio = cat ? portfolioItems.filter(p => p.category === cat) : [];
+const cats = categoryMap[service.slug] || [];
+const servicePortfolio = cats.length ? portfolioItems.filter(p => cats.includes(p.category)) : [];
 ---
 
 <Layout title={service.title} description={service.fullDescription.slice(0, 160)}>

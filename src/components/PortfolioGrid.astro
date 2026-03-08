@@ -1,5 +1,12 @@
 ---
-import type { PortfolioItem } from '../data/portfolio';
+interface PortfolioItem {
+  image: string;
+  imageLabel?: string;
+  title: string;
+  location: string;
+  category: string;
+  projectSlug?: string;
+}
 
 interface Props {
   items: PortfolioItem[];
@@ -33,6 +40,7 @@ const { items, categories = [], showFilters = true } = Astro.props;
         width="400"
         height="300"
       />
+      {item.imageLabel && <div class="portfolio-badge">{item.imageLabel}</div>}
       <div class="portfolio-overlay">
         <div>
           <h5>{item.title}</h5>
@@ -114,6 +122,22 @@ const { items, categories = [], showFilters = true } = Astro.props;
     transition: transform 0.5s ease;
   }
   .portfolio-item:hover img { transform: scale(1.08); }
+  .portfolio-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(10,10,10,0.8);
+    backdrop-filter: blur(4px);
+    color: var(--primary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: var(--radius-full);
+    z-index: 2;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(212,160,60,0.3);
+  }
   .portfolio-overlay {
     position: absolute;
     inset: 0;
