@@ -51,7 +51,7 @@ const id = `town-${Math.random().toString(36).slice(2, 7)}`;
       const exact = towns.find((t) => norm(t.town) === q) || (hits.length === 1 ? hits[0] : undefined);
       if (exact) {
         const proj = exact.projects
-          ? ` We've completed <a href="/portfolio?town=${encodeURIComponent(exact.town)}">${exact.projects} documented project${exact.projects > 1 ? 's' : ''}</a> there.`
+          ? ` <a href="/portfolio?town=${encodeURIComponent(exact.town)}">See some of our work there</a>.`
           : '';
         out.innerHTML = `<span class="yes"><strong>Yes, ${exact.town}</strong> (${exact.county}, ${exact.state}) is in our service area.${proj}</span>`;
       } else if (hits.length) {

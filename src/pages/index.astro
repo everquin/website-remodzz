@@ -6,7 +6,7 @@ import ScheduleChart from '../components/ScheduleChart.astro';
 import TownCheck from '../components/TownCheck.astro';
 import { services } from '../data/services';
 import { site, serviceArea } from '../data/site';
-import { projects, totals, projectsIn, sheetPhoto } from '../data/projects';
+import { projects, sheetPhoto } from '../data/projects';
 
 // Every documented space, tagged with its job, for the hero contact sheet + ticker.
 // Round-robin across projects so one big job doesn't fill a whole column.
@@ -50,7 +50,7 @@ const steps = [
   <section class="hero grid-bg">
     <div class="wrap hero-grid">
       <div class="hero-copy">
-        <p class="eyebrow">Remodeling &amp; new homes · Northern IL + Southern WI</p>
+        <p class="eyebrow">{site.experience.years} years · Remodeling &amp; new homes · Northern IL + Southern WI</p>
         <h1 class="display-xl">You know<br />you <span class="red">want&nbsp;to.</span></h1>
         <p class="lead">Kitchens, baths, basements, additions and new homes, built from a proposal that leaves nothing out and a schedule we guarantee in writing.</p>
 
@@ -110,8 +110,8 @@ const steps = [
   <!-- ============ NUMBERS ============ -->
   <section class="numbers wrap">
     <dl>
-      <div data-reveal><dt class="mono">Documented projects</dt><dd>{totals.projects}</dd></div>
-      <div data-reveal><dt class="mono">Spaces on file</dt><dd>{totals.spaces}</dd></div>
+      <div data-reveal><dt class="mono">Years building</dt><dd>{site.experience.years}</dd></div>
+      <div data-reveal><dt class="mono">Projects completed</dt><dd>100<small>s</small></dd></div>
       <div data-reveal><dt class="mono">Proposal categories</dt><dd>54+</dd></div>
       <div data-reveal><dt class="mono">Warranty, every job</dt><dd>2<small>yr</small></dd></div>
       <div data-reveal><dt class="mono">Counties served</dt><dd>{serviceArea.length}</dd></div>
@@ -131,7 +131,6 @@ const steps = [
 
       <ol class="svc-list">
         {services.map((s, i) => {
-          const work = projectsIn(s.categories);
           const img = sheetPhoto(s.sheet);
           return (
             <li data-reveal>
@@ -139,7 +138,7 @@ const steps = [
                 <span class="svc-n mono">{String(i + 1).padStart(2, '0')}</span>
                 <span class="svc-title">{s.shortTitle}</span>
                 <span class="svc-tag">{s.tagline}</span>
-                <span class="svc-count mono">{work.length ? `${work.length} project${work.length > 1 ? 's' : ''}` : 'Ask us'}</span>
+                <span class="svc-count mono">See work</span>
                 <span class="svc-arrow" aria-hidden="true">→</span>
                 {img && <img class="svc-peek" src={img} alt="" width="756" height="415" loading="lazy" />}
               </a>
@@ -186,7 +185,7 @@ const steps = [
           <p class="eyebrow">Project files</p>
           <h2 class="display-l">Real jobs.<br />Real job numbers.</h2>
         </div>
-        <p>Every project we take on gets a job number and is documented from start to finish. Here are a few from the file.</p>
+        <p>Over {site.experience.years} years and hundreds of projects, every job has carried a job number and been documented start to finish. Here are a few from the file.</p>
       </div>
 
       <div class="feature-grid">
@@ -198,7 +197,7 @@ const steps = [
       </div>
 
       <div class="feature-more" data-reveal>
-        <a href="/portfolio" class="btn btn-lg">Browse all {totals.projects} projects <span class="arrow" aria-hidden="true">→</span></a>
+        <a href="/portfolio" class="btn btn-lg">Browse the project gallery <span class="arrow" aria-hidden="true">→</span></a>
       </div>
     </div>
   </section>

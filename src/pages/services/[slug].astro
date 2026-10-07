@@ -2,7 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
 import { services, type Service } from '../../data/services';
-import { projectsIn, sheetPhoto, projectWithSheet, totals } from '../../data/projects';
+import { projectsIn, sheetPhoto, projectWithSheet } from '../../data/projects';
 import { site } from '../../data/site';
 
 export function getStaticPaths() {
@@ -74,7 +74,7 @@ const typeParam = s.categories[0];
       <div class="wrap">
         <div class="work-head">
           <h2 class="display-m">{s.shortTitle} from the project file</h2>
-          <a href={`/portfolio?type=${typeParam}`} class="link-arrow">See all {work.length} →</a>
+          <a href={`/portfolio?type=${typeParam}`} class="link-arrow">See more →</a>
         </div>
         <div class="work-grid">
           {work.slice(0, 6).map((p) => <ProjectCard project={p} />)}
@@ -88,7 +88,7 @@ const typeParam = s.categories[0];
       <p class="eyebrow">Other services</p>
       <div class="others-list">
         {others.map((o) => <a href={`/services/${o.slug}`} class="chip">{o.shortTitle}</a>)}
-        <a href="/portfolio" class="chip">All {totals.projects} projects →</a>
+        <a href="/portfolio" class="chip">Project gallery →</a>
       </div>
     </div>
   </section>

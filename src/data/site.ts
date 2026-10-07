@@ -11,6 +11,7 @@ export const site = {
     { days: 'Saturday', time: 'By appointment' },
   ],
   region: 'Northern Illinois & Southern Wisconsin',
+  experience: { years: '20+', projects: 'Hundreds' },
   payment: ['Visa', 'MasterCard', 'Discover', 'PayPal'],
   // Estimate requests are delivered to this inbox via Web3Forms (web3forms.com).
   estimateEmail: 'estimates@remodzz.com',

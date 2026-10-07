@@ -3,7 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import ProposalSheet from '../components/ProposalSheet.astro';
 import ScheduleChart from '../components/ScheduleChart.astro';
 import { site } from '../data/site';
-import { totals, sheetPhoto } from '../data/projects';
+import { sheetPhoto } from '../data/projects';
 
 const advantages = [
   {
@@ -55,7 +55,7 @@ const credentials = ['Licensed & insured', 'In-house design', 'Guaranteed schedu
           <div><dt class="mono">Company</dt><dd>{site.legalName} dba REMODzz</dd></div>
           <div><dt class="mono">Formerly</dt><dd>{site.formerName}</dd></div>
           <div><dt class="mono">Region</dt><dd>{site.region}</dd></div>
-          <div><dt class="mono">On file</dt><dd>{totals.projects} documented projects</dd></div>
+          <div><dt class="mono">Experience</dt><dd>{site.experience.years} years, {site.experience.projects.toLowerCase()} of projects</dd></div>
         </dl>
       </div>
       <div class="story-copy">

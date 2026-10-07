@@ -1,7 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ProjectCard from '../../components/ProjectCard.astro';
-import { projects, totals, categoryLabels, type Category } from '../../data/projects';
+import { projects, categoryLabels, type Category } from '../../data/projects';
+import { site } from '../../data/site';
 
 const cats = (Object.keys(categoryLabels) as Category[])
   .map((c) => ({ slug: c, label: categoryLabels[c], count: projects.filter((p) => p.categories.includes(c)).length }))
@@ -12,15 +13,15 @@ const towns = [...new Set(projects.map((p) => p.town))].sort();
 
 <Layout
   title="Projects"
-  description={`${totals.projects} documented REMODzz projects across ${totals.towns} towns in Northern Illinois and Southern Wisconsin: kitchens, baths, basements, additions, decks and new homes.`}
+  description="A selection of REMODzz remodeling and new home projects from across Northern Illinois and Southern Wisconsin: kitchens, baths, basements, additions, decks and new homes."
 >
   <section class="page-hero grid-bg">
     <div class="wrap">
       <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Projects</span></nav>
       <h1 class="display-l">The project file.</h1>
       <p class="lead">
-        {totals.projects} jobs, {totals.spaces} documented spaces, {totals.towns} towns. Every project carries a job number
-        from our NeoTek Construction days, and every one was documented from start to finish.
+        A selection from {site.experience.years} years and hundreds of completed projects. Each carries its original job number
+        from our NeoTek Construction days and was documented from start to finish.
       </p>
     </div>
   </section>
@@ -29,9 +30,9 @@ const towns = [...new Set(projects.map((p) => p.town))].sort();
     <div class="wrap">
       <div class="toolbar">
         <div class="filters" role="group" aria-label="Filter by type">
-          <button class="chip" aria-pressed="true" data-filter="all">All <span class="count">{projects.length}</span></button>
+          <button class="chip" aria-pressed="true" data-filter="all">All</button>
           {cats.map((c) => (
-            <button class="chip" aria-pressed="false" data-filter={c.slug}>{c.label} <span class="count">{c.count}</span></button>
+            <button class="chip" aria-pressed="false" data-filter={c.slug}>{c.label}</button>
           ))}
         </div>
         <div class="field town-field">
@@ -43,7 +44,7 @@ const towns = [...new Set(projects.map((p) => p.town))].sort();
         </div>
       </div>
 
-      <p class="result mono" aria-live="polite" id="resultCount">Showing {projects.length} projects</p>
+      <p class="result mono" aria-live="polite" id="resultCount">Showing all</p>
 
       <div class="grid" id="projectGrid">
         {projects.map((p, i) => <ProjectCard project={p} eager={i < 3} />)}
@@ -107,7 +108,8 @@ const towns = [...new Set(projects.map((p) => p.town))].sort();
     }
     chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === cat)));
     townSel.value = town;
-    count.textContent = `Showing ${n} project${n === 1 ? '' : 's'}${town ? ` in ${town}` : ''}`;
+    const label = cat === 'all' ? 'all' : (chips.find((c) => c.dataset.filter === cat)?.textContent || '').trim();
+    count.textContent = `Showing ${label}${town ? ` in ${town}` : ''}`;
     empty.hidden = n > 0;
 
     const q = new URLSearchParams();

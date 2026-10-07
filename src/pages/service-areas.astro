@@ -27,7 +27,7 @@ const townCount = serviceArea.reduce((n, c) => n + c.towns.length, 0);
 
   <section class="section-sm">
     <div class="wrap">
-      <p class="legend mono"><span class="dot"></span> Towns with documented REMODzz projects. Select one to see the work.</p>
+      <p class="legend mono"><span class="dot"></span> Towns featured in our project gallery. Select one to see the work.</p>
       {states.map((st) => (
         <div class="state">
           <h2 class="state-name"><span class="mono">{st.code}</span>{st.name}</h2>
@@ -39,7 +39,7 @@ const townCount = serviceArea.reduce((n, c) => n + c.towns.length, 0);
                   {c.towns.map((t) => (
                     <li>
                       {projectsByTown[t]
-                        ? <a href={`/portfolio?town=${encodeURIComponent(t)}`} class="has-work">{t}<span class="mono">{projectsByTown[t]}</span></a>
+                        ? <a href={`/portfolio?town=${encodeURIComponent(t)}`} class="has-work">{t}</a>
                         : <span>{t}</span>}
                     </li>
                   ))}
@@ -105,7 +105,6 @@ const townCount = serviceArea.reduce((n, c) => n + c.towns.length, 0);
     color: var(--ink);
   }
   .has-work::before { content: ''; width: 8px; height: 8px; background: var(--red); border-radius: 50%; }
-  .has-work .mono { font-size: 0.65rem; color: var(--muted); font-weight: 400; }
   .has-work:hover { color: var(--red-ink); }
   .not-listed {
     margin-top: 24px;
