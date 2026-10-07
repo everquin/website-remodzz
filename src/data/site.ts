@@ -12,6 +12,10 @@ export const site = {
   ],
   region: 'Northern Illinois & Southern Wisconsin',
   payment: ['Visa', 'MasterCard', 'Discover', 'PayPal'],
+  // Estimate requests are delivered to this inbox via Web3Forms (web3forms.com).
+  estimateEmail: 'estimates@remodzz.com',
+  // Web3Forms access key for estimateEmail. It is designed to be public.
+  web3formsKey: '',
 };
 
 export interface County {

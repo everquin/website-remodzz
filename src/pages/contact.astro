@@ -2,9 +2,11 @@
 import Layout from '../layouts/Layout.astro';
 import { site, serviceArea } from '../data/site';
 
-// Where estimate requests are POSTed (Formspree, Web3Forms, a Cloudflare
-// Worker, etc). Set PUBLIC_ESTIMATE_ENDPOINT in .env or the hosting dashboard.
-const endpoint = import.meta.env.PUBLIC_ESTIMATE_ENDPOINT || '';
+// Estimate requests go to Web3Forms, which emails site.estimateEmail.
+// PUBLIC_ESTIMATE_ENDPOINT overrides this with any endpoint that accepts
+// FormData (Formspree, a Cloudflare Worker, etc).
+const web3formsKey = import.meta.env.PUBLIC_WEB3FORMS_KEY || site.web3formsKey;
+const endpoint = import.meta.env.PUBLIC_ESTIMATE_ENDPOINT || (web3formsKey ? 'https://api.web3forms.com/submit' : '');
 
 const types = [
   { value: 'kitchen', label: 'Kitchen' },
@@ -48,6 +50,8 @@ const faqs = [
     <div class="wrap est-grid">
       <div class="est-main">
         <form id="estimate" class="wizard" data-endpoint={endpoint} novalidate>
+          {web3formsKey && <input type="hidden" name="access_key" value={web3formsKey} />}
+          <input type="hidden" name="from_name" value="REMODzz website" />
           <ol class="progress" aria-hidden="true">
             <li class="is-current"><span>1</span>Project</li>
             <li><span>2</span>Scope</li>
@@ -505,7 +509,10 @@ const faqs = [
     if (data.get('company_website')) return; // bot
     data.delete('company_website');
     data.set('project_type', data.getAll('project_type').join(', '));
-    data.set('_subject', `Estimate request: ${data.get('project_type')} in ${data.get('town')}`);
+    const subject = `Estimate request: ${data.get('project_type')} in ${data.get('town')}`;
+    data.set('subject', subject); // Web3Forms
+    data.set('_subject', subject); // Formspree
+    data.set('replyto', String(data.get('email') || '')); // replies go to the customer
 
     const endpoint = form.dataset.endpoint;
     if (!endpoint) {
