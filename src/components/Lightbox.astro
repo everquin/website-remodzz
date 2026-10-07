@@ -1,0 +1,117 @@
+---
+// Site-wide lightbox. Any <a data-lightbox="group" href="img.jpg" data-caption="…">
+// opens here; links sharing a group value page through together.
+---
+
+<dialog class="lightbox" id="lightbox" aria-label="Image viewer">
+  <figure>
+    <img id="lbImg" alt="" />
+    <figcaption>
+      <span id="lbCaption"></span>
+      <span class="mono" id="lbCount"></span>
+    </figcaption>
+  </figure>
+  <button class="lb-btn lb-close" id="lbClose" aria-label="Close">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12" /></svg>
+  </button>
+  <button class="lb-btn lb-prev" id="lbPrev" aria-label="Previous image">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 18-6-6 6-6" /></svg>
+  </button>
+  <button class="lb-btn lb-next" id="lbNext" aria-label="Next image">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6" /></svg>
+  </button>
+</dialog>
+
+<style>
+  .lightbox {
+    width: 100vw;
+    height: 100dvh;
+    max-width: none;
+    max-height: none;
+    margin: 0;
+    border: 0;
+    background: rgba(12, 11, 10, 0.96);
+    color: var(--paper);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 64px clamp(16px, 6vw, 96px);
+  }
+  .lightbox[open] { display: flex; }
+  .lightbox::backdrop { background: transparent; }
+  figure { display: grid; gap: 14px; justify-items: center; max-width: 100%; }
+  img {
+    max-width: min(1100px, 100%);
+    max-height: calc(100dvh - 160px);
+    object-fit: contain;
+    border-radius: 2px;
+  }
+  figcaption {
+    display: flex;
+    gap: 16px;
+    align-items: baseline;
+    font-size: 0.95rem;
+    color: #cfc9bd;
+    text-align: center;
+  }
+  figcaption .mono { color: #7d776c; font-size: 0.7rem; }
+  .lb-btn {
+    position: absolute;
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    background: rgba(243, 239, 230, 0.08);
+    border: 1px solid rgba(243, 239, 230, 0.16);
+    border-radius: 50%;
+    color: var(--paper);
+    cursor: pointer;
+  }
+  .lb-btn:hover { background: var(--red); border-color: var(--red); }
+  .lb-close { top: 16px; right: 16px; }
+  .lb-prev { left: 16px; top: 50%; transform: translateY(-50%); }
+  .lb-next { right: 16px; top: 50%; transform: translateY(-50%); }
+  @media (max-width: 640px) {
+    .lb-prev, .lb-next { top: auto; bottom: 16px; transform: none; }
+  }
+</style>
+
+<script>
+  const dlg = document.getElementById('lightbox') as HTMLDialogElement;
+  const img = document.getElementById('lbImg') as HTMLImageElement;
+  const cap = document.getElementById('lbCaption')!;
+  const count = document.getElementById('lbCount')!;
+  let group: HTMLAnchorElement[] = [];
+  let idx = 0;
+
+  const show = (i: number) => {
+    idx = (i + group.length) % group.length;
+    const a = group[idx];
+    img.src = a.href;
+    img.alt = a.dataset.caption || '';
+    cap.textContent = a.dataset.caption || '';
+    count.textContent = group.length > 1 ? `${idx + 1} / ${group.length}` : '';
+    (document.getElementById('lbPrev') as HTMLElement).hidden = group.length < 2;
+    (document.getElementById('lbNext') as HTMLElement).hidden = group.length < 2;
+  };
+
+  document.addEventListener('click', (e) => {
+    const a = (e.target as HTMLElement).closest<HTMLAnchorElement>('a[data-lightbox]');
+    if (!a || e.metaKey || e.ctrlKey) return;
+    e.preventDefault();
+    const name = a.dataset.lightbox;
+    group = Array.from(document.querySelectorAll<HTMLAnchorElement>(`a[data-lightbox="${name}"]`))
+      .filter((el) => el.offsetParent !== null);
+    show(Math.max(0, group.indexOf(a)));
+    dlg.showModal();
+  });
+
+  document.getElementById('lbClose')!.addEventListener('click', () => dlg.close());
+  document.getElementById('lbPrev')!.addEventListener('click', () => show(idx - 1));
+  document.getElementById('lbNext')!.addEventListener('click', () => show(idx + 1));
+  dlg.addEventListener('click', (e) => { if (e.target === dlg) dlg.close(); });
+  dlg.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') show(idx - 1);
+    if (e.key === 'ArrowRight') show(idx + 1);
+  });
+</script>

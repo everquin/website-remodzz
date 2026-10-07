@@ -1,268 +1,231 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ProposalSheet from '../components/ProposalSheet.astro';
+import ScheduleChart from '../components/ScheduleChart.astro';
+import { site } from '../data/site';
+import { totals, sheetPhoto } from '../data/projects';
+
+const advantages = [
+  {
+    title: 'Exhaustively detailed proposals',
+    body: 'Our proposals examine 54+ project categories, so you know exactly what is and isn\'t covered. Every material, every labor item and every finish is documented and priced before we break ground. No surprises, no hidden costs, no budget overruns.',
+  },
+  {
+    title: 'In-house design services',
+    body: 'Professional design is included with every project: custom layouts, detailed renderings and visual views that get the most out of the space. Seeing the project before construction keeps the budget accurate and the result exactly what you pictured.',
+  },
+  {
+    title: 'Guaranteed schedules',
+    body: 'Every project comes with a detailed calendar of events, with penalties on us if we miss the completion date. We communicate clearly about trades, schedules and inspections throughout, so you always know where your project stands.',
+  },
+  {
+    title: 'Custom cabinetry',
+    body: 'In-house fabrication and trusted trade partnerships give you unlimited style, design, wood and finish options at prices comparable to stock materials. Creative storage solutions are our specialty, and we make every inch count.',
+  },
+  {
+    title: 'Industry-leading two-year warranty',
+    body: 'We back our work with a two-year warranty across all project types. If something isn\'t right, we make it right.',
+  },
+];
+
+const credentials = ['Licensed & insured', 'In-house design', 'Guaranteed schedules', '2-year warranty', 'Energy Star Partner', 'Habitat for Humanity Partner'];
 ---
 
-<Layout title="About Us" description="Learn about REMODzz (Everquin, LLC) — premier remodeling and new home construction contractor serving Northern Illinois and Southern Wisconsin.">
-
-  <section class="page-hero">
-    <div class="container">
-      <div class="breadcrumb">
-        <a href="/">Home</a> <span>/</span> <span>About Us</span>
+<Layout title="Why REMODzz" description="REMODzz (Everquin, LLC, formerly NeoTek Construction) is a remodeling and new home construction contractor serving Northern Illinois and Southern Wisconsin. Detailed proposals, in-house design, guaranteed schedules.">
+  <section class="page-hero grid-bg about-hero">
+    <div class="wrap about-hero-grid">
+      <div>
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Why REMODzz</span></nav>
+        <h1 class="display-l">Know what you're getting <span class="red">before</span> we start.</h1>
+        <p class="lead">Every client deserves to know exactly what the project includes, what it costs and when it will be done. That idea shapes how we work.</p>
       </div>
-      <h1>About <span class="text-primary">REMODzz</span></h1>
-      <p>Premier remodeling and new home construction serving Northern Illinois and Southern Wisconsin.</p>
-    </div>
-  </section>
-
-  <!-- Story -->
-  <section class="section bg-darker">
-    <div class="container">
-      <div class="about-grid">
-        <div class="about-images" data-animate>
-          <img src="/images/portfolio/kitchen-libertyville-after.jpg" alt="REMODzz kitchen remodel" class="about-img-main" loading="lazy">
-          <img src="/images/portfolio/addition-libertyville-after.jpg" alt="REMODzz addition project" class="about-img-secondary" loading="lazy">
-        </div>
-        <div class="about-content" data-animate>
-          <span class="section-label">Our Story</span>
-          <h2 class="section-title">Building Trust, One Project at a Time</h2>
-          <p>REMODzz (Everquin, LLC — formerly NeoTek Construction) is the premier remodeling and new home construction contractor serving Northern Illinois and Southern Wisconsin. We handle projects of all sizes, from a simple bathroom refresh or handyman task to a complex home addition, renovation, or complete redesign.</p>
-          <p>Our in-house design services, exhaustively detailed proposals, and guaranteed schedules set us apart from the competition. We believe every client deserves to know exactly what their project entails, what it will cost, and when it will be complete.</p>
-          <p>With experience in site-built, panelized, and modular construction, we bring versatile expertise to every project. Our team combines professional project management with skilled craftsmanship to deliver results that exceed expectations.</p>
-
-          <div class="credential-grid">
-            <div class="credential">
-              <span class="credential-icon">✓</span>
-              <span>Licensed & Insured</span>
-            </div>
-            <div class="credential">
-              <span class="credential-icon">✓</span>
-              <span>In-House Design</span>
-            </div>
-            <div class="credential">
-              <span class="credential-icon">✓</span>
-              <span>Energy Star Partner</span>
-            </div>
-            <div class="credential">
-              <span class="credential-icon">✓</span>
-              <span>2-Year Warranty</span>
-            </div>
-            <div class="credential">
-              <span class="credential-icon">✓</span>
-              <span>Habitat for Humanity</span>
-            </div>
-            <div class="credential">
-              <span class="credential-icon">✓</span>
-              <span>Guaranteed Schedules</span>
-            </div>
-          </div>
-        </div>
+      <div class="hero-stack" aria-hidden="true">
+        <img src={sheetPhoto('012')} alt="" width="756" height="415" />
+        <img src={sheetPhoto('038')} alt="" width="756" height="415" />
+        <img src={sheetPhoto('022')} alt="" width="756" height="415" />
       </div>
     </div>
   </section>
 
-  <!-- Advantages -->
-  <section class="section bg-dark" id="advantages">
-    <div class="container">
-      <div class="section-header" data-animate>
-        <span class="section-label">The REMODzz Difference</span>
-        <h2 class="section-title">Five Reasons We Stand Apart</h2>
-        <p class="section-desc">95% of contractors don't offer our level of transparency, commitment, and quality. Here's what makes us different.</p>
+  <section class="section">
+    <div class="wrap story">
+      <div class="story-side">
+        <p class="eyebrow">Our story</p>
+        <dl class="facts">
+          <div><dt class="mono">Company</dt><dd>{site.legalName} dba REMODzz</dd></div>
+          <div><dt class="mono">Formerly</dt><dd>{site.formerName}</dd></div>
+          <div><dt class="mono">Region</dt><dd>{site.region}</dd></div>
+          <div><dt class="mono">On file</dt><dd>{totals.projects} documented projects</dd></div>
+        </dl>
       </div>
-
-      <div class="advantages-grid">
-        <div class="advantage-card" data-animate>
-          <div class="advantage-header">
-            <div class="advantage-num">1</div>
-            <h3>Exhaustively Detailed Proposals</h3>
-          </div>
-          <p>Our proposals examine 54+ project categories so you know exactly what is and isn't covered. No surprises, no hidden costs, no budget overruns. You'll know precisely what your project entails before we break ground. Every material, every labor item, every finish — documented and priced.</p>
-        </div>
-
-        <div class="advantage-card" data-animate>
-          <div class="advantage-header">
-            <div class="advantage-num">2</div>
-            <h3>In-House Design Services</h3>
-          </div>
-          <p>Professional design is included with every project. We provide custom layouts, detailed renderings, and visual views that ensure maximized functionality and visual appeal. See your project come to life before construction begins — this is critical for both budget accuracy and helping you visualize the finished product.</p>
-        </div>
-
-        <div class="advantage-card" data-animate>
-          <div class="advantage-header">
-            <div class="advantage-num">3</div>
-            <h3>Guaranteed Schedules</h3>
-          </div>
-          <p>We provide a detailed calendar of events for every project, with specific penalties imposed on ourselves if completion dates are missed. Transparent communication about trades, schedules, and inspections throughout the entire process. You'll always know exactly where your project stands.</p>
-        </div>
-
-        <div class="advantage-card" data-animate>
-          <div class="advantage-header">
-            <div class="advantage-num">4</div>
-            <h3>Custom Cabinetry</h3>
-          </div>
-          <p>Both in-house fabrication and trusted trade partnerships give you unlimited style, design, wood, and finish options at competitive pricing comparable to stock materials. Creative storage solutions are our specialty — we maximize every inch of your space.</p>
-        </div>
-
-        <div class="advantage-card" data-animate>
-          <div class="advantage-header">
-            <div class="advantage-num">5</div>
-            <h3>Industry-Leading Two-Year Warranty</h3>
-          </div>
-          <p>We back our work with a comprehensive two-year warranty across all project types. This industry-leading protection gives you peace of mind long after the project is complete. If something isn't right, we make it right — period.</p>
-        </div>
+      <div class="story-copy">
+        <p class="big">REMODzz handles projects of every size, from a bathroom refresh or a handyman call to a complex addition, renovation or complete redesign, plus new homes built site-built, panelized or modular.</p>
+        <p>We started as NeoTek Construction, which is why our job numbers still carry the <span class="mono red">NTK</span> prefix. The name changed. The approach didn't: in-house design, exhaustively detailed proposals and schedules we guarantee in writing.</p>
+        <p>Our team combines professional project management with skilled craftsmanship. Every job is documented from start to finish, with before, during and after photos, so you can see the work and so can we.</p>
+        <ul class="creds">
+          {credentials.map((c) => <li>{c}</li>)}
+        </ul>
       </div>
     </div>
   </section>
 
-  <!-- Community -->
-  <section class="section bg-darker">
-    <div class="container">
-      <div class="community-grid">
-        <div data-animate>
-          <span class="section-label">Community</span>
-          <h2 class="section-title">Giving Back</h2>
-          <p>REMODzz is proud to be a Habitat for Humanity partner. We believe in using our skills to strengthen our community, one home at a time. Our charitable involvement in construction work reflects the same commitment to quality and care that we bring to every client project.</p>
-          <p>As an Energy Star Partner, we're also committed to energy-efficient construction and environmentally conscious building practices. We help homeowners reduce their environmental footprint while lowering energy costs.</p>
+  <section class="section bg-ink grid-bg" id="advantages">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">The REMODzz difference</p>
+          <h2 class="display-l">Five commitments,<br />in writing.</h2>
         </div>
-        <div class="community-badges" data-animate>
-          <div class="card">
-            <div style="font-size: 2.5rem; margin-bottom: 12px;">❤️</div>
-            <h4>Habitat for Humanity</h4>
-            <p>Proud partner giving back through charitable construction work in our community.</p>
-          </div>
-          <div class="card">
-            <div style="font-size: 2.5rem; margin-bottom: 12px;">⚡</div>
-            <h4>Energy Star Partner</h4>
-            <p>Energy-efficient construction for an environmentally conscious approach.</p>
-          </div>
-        </div>
+        <p>Most contractors don't offer this level of transparency, commitment and quality. We do on every project.</p>
+      </div>
+      <ol class="adv">
+        {advantages.map((a, i) => (
+          <li data-reveal>
+            <span class="adv-n">{String(i + 1).padStart(2, '0')}</span>
+            <h3>{a.title}</h3>
+            <p>{a.body}</p>
+          </li>
+        ))}
+      </ol>
+      <div class="artifacts">
+        <ProposalSheet />
+        <ScheduleChart />
       </div>
     </div>
   </section>
 
-  <!-- CTA -->
-  <section class="section-sm bg-dark">
-    <div class="container text-center">
-      <h2 data-animate>Ready to Get Started?</h2>
-      <p style="color: var(--text); max-width: 500px; margin: 12px auto 28px;" data-animate>Contact us for a free, no-hassle estimate on your next project.</p>
-      <div data-animate>
-        <a href="/contact" class="btn btn-primary btn-lg">Get Free Estimate</a>
+  <section class="section" id="process">
+    <div class="wrap">
+      <div class="section-head">
+        <div>
+          <p class="eyebrow">How it works</p>
+          <h2 class="display-l">From first visit<br />to final walkthrough.</h2>
+        </div>
       </div>
+      <ol class="timeline">
+        <li data-reveal><span class="mono red">01 · Consultation</span><p>We meet at your home, discuss your vision, assess the space and outline possibilities. No pressure, no obligation.</p></li>
+        <li data-reveal><span class="mono red">02 · Design & proposal</span><p>Our in-house team creates detailed designs and renderings. You receive a comprehensive proposal covering 54+ categories.</p></li>
+        <li data-reveal><span class="mono red">03 · Build</span><p>Construction begins on a guaranteed schedule. Regular updates keep you informed, and we coordinate every trade.</p></li>
+        <li data-reveal><span class="mono red">04 · Walkthrough & warranty</span><p>A final walkthrough makes sure everything meets your expectations, and your two-year warranty begins.</p></li>
+      </ol>
     </div>
   </section>
 
+  <section class="section-sm bg-paper-2">
+    <div class="wrap community">
+      <div>
+        <p class="eyebrow">Community</p>
+        <h2 class="display-m">Giving back, building better.</h2>
+      </div>
+      <div class="community-cards">
+        <div>
+          <h3>Habitat for Humanity</h3>
+          <p>A proud partner, putting our skills to work strengthening our community one home at a time.</p>
+        </div>
+        <div>
+          <h3>Energy Star Partner</h3>
+          <p>Energy-efficient construction practices that lower homeowners' energy costs and environmental footprint.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 </Layout>
 
 <style>
-  .about-grid {
+  .about-hero-grid {
     display: grid;
-    grid-template-columns: 1fr 1.2fr;
-    gap: 60px;
-    align-items: start;
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+    gap: 48px;
+    align-items: center;
   }
-  .about-images {
-    position: relative;
-  }
-  .about-img-main {
-    width: 100%;
-    border-radius: var(--radius-xl);
-    object-fit: cover;
-  }
-  .about-img-secondary {
+  .about-hero h1 { max-width: 15ch; }
+  .hero-stack { position: relative; height: 340px; }
+  .hero-stack img {
     position: absolute;
-    bottom: -30px;
-    right: -20px;
-    width: 55%;
-    border-radius: var(--radius-lg);
-    border: 4px solid var(--darker);
-    object-fit: cover;
+    width: 78%;
+    border: 6px solid var(--card);
+    box-shadow: 0 24px 48px -28px rgba(20, 19, 18, 0.6);
   }
-  .about-content p {
-    color: var(--text);
-    margin-bottom: 16px;
-    font-size: 1.05rem;
-    line-height: 1.7;
+  .hero-stack img:nth-child(1) { top: 0; left: 0; transform: rotate(-4deg); }
+  .hero-stack img:nth-child(2) { top: 70px; right: 0; transform: rotate(3deg); }
+  .hero-stack img:nth-child(3) { bottom: 0; left: 10%; transform: rotate(-1deg); }
+
+  .story { display: grid; grid-template-columns: minmax(0, 0.7fr) minmax(0, 1.3fr); gap: clamp(32px, 6vw, 96px); }
+  .facts { margin-top: 24px; border-top: 2px solid var(--ink); }
+  .facts div { padding: 14px 0; border-bottom: 1px solid var(--line); }
+  .facts dt { color: var(--muted); font-size: 0.68rem; }
+  .facts dd { font-weight: 700; color: var(--ink); margin-top: 2px; }
+  .story-copy { display: grid; gap: 20px; }
+  .story-copy p { color: var(--text); max-width: 62ch; }
+  .story-copy .big {
+    font-family: var(--font-display);
+    font-stretch: 108%;
+    font-weight: 600;
+    font-size: clamp(1.35rem, 2.2vw, 1.8rem);
+    line-height: 1.3;
+    color: var(--ink);
+    letter-spacing: -0.01em;
   }
-  .credential-grid {
+  .creds { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .creds li {
+    padding: 8px 14px;
+    border: 1.5px solid var(--ink);
+    border-radius: 999px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  .creds li::before { content: '✓ '; color: var(--red); font-weight: 800; }
+
+  .adv { border-top: 1px solid var(--line-dark); }
+  .adv li {
+    display: grid;
+    grid-template-columns: 120px minmax(0, 0.9fr) minmax(0, 1.2fr);
+    gap: 24px;
+    padding: 32px 0;
+    border-bottom: 1px solid var(--line-dark);
+    align-items: baseline;
+  }
+  .adv-n {
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    font-weight: 900;
+    font-size: 3.5rem;
+    line-height: 0.9;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--red);
+  }
+  .adv h3 { font-size: clamp(1.4rem, 2.2vw, 1.9rem); }
+  .adv p { color: #a19b8f; }
+  .artifacts {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 28px;
-  }
-  .credential {
-    display: flex;
+    gap: 32px;
+    margin-top: 64px;
     align-items: center;
-    gap: 10px;
-    font-size: 0.95rem;
-    color: var(--text);
-  }
-  .credential-icon {
-    color: var(--primary);
-    font-weight: 700;
   }
 
-  .advantages-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-    gap: 24px;
-  }
-  .advantage-card {
-    background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-  }
-  .advantage-header {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 16px;
-  }
-  .advantage-num {
-    flex-shrink: 0;
-    width: 44px;
-    height: 44px;
-    background: var(--primary);
-    color: var(--darkest);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-family: var(--font-heading);
-  }
-  .advantage-card h3 { font-size: 1.1rem; }
-  .advantage-card p { color: var(--text-light); font-size: 0.95rem; margin: 0; }
+  .timeline { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 24px; }
+  .timeline li { border-top: 2px solid var(--ink); padding-top: 18px; display: grid; gap: 10px; align-content: start; }
+  .timeline p { color: var(--muted); }
 
-  .community-grid {
-    display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: 60px;
-    align-items: start;
-  }
-  .community-grid p {
-    color: var(--text);
-    font-size: 1.05rem;
-    margin-bottom: 16px;
-  }
-  .community-badges {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  .community-badges h4 {
-    font-size: 1.05rem;
-    margin-bottom: 8px;
-  }
-  .community-badges p {
-    font-size: 0.9rem;
-    color: var(--text-light);
-    margin: 0;
-  }
+  .community { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: clamp(32px, 6vw, 96px); }
+  .community h2 { margin-top: 16px; }
+  .community-cards { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .community-cards div { background: var(--card); border: 1px solid var(--line); border-top: 3px solid var(--red); padding: 24px; }
+  .community-cards h3 { font-size: 1.3rem; margin-bottom: 8px; }
+  .community-cards p { color: var(--muted); }
 
-  @media (max-width: 900px) {
-    .about-grid,
-    .community-grid { grid-template-columns: 1fr; }
-    .about-img-secondary { position: static; width: 60%; margin-top: -40px; margin-left: auto; }
-    .advantages-grid { grid-template-columns: 1fr; }
+  @media (max-width: 960px) {
+    .about-hero-grid, .story, .community { grid-template-columns: 1fr; }
+    .hero-stack { height: 260px; max-width: 520px; }
+    .adv li { grid-template-columns: 72px 1fr; }
+    .adv li p { grid-column: 2; }
+    .adv-n { font-size: 2.4rem; }
+    .artifacts { grid-template-columns: 1fr; }
+    .timeline { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 560px) {
+    .timeline, .community-cards { grid-template-columns: 1fr; }
+    .hero-stack { height: 200px; }
   }
 </style>

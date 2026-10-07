@@ -1,35 +1,123 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import PortfolioGrid from '../../components/PortfolioGrid.astro';
-import { portfolioItems, categories } from '../../data/portfolio';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { projects, totals, categoryLabels, type Category } from '../../data/projects';
+
+const cats = (Object.keys(categoryLabels) as Category[])
+  .map((c) => ({ slug: c, label: categoryLabels[c], count: projects.filter((p) => p.categories.includes(c)).length }))
+  .filter((c) => c.count > 0);
+
+const towns = [...new Set(projects.map((p) => p.town))].sort();
 ---
 
-<Layout title="Portfolio" description="Browse our gallery of completed remodeling projects across Northern Illinois and Southern Wisconsin — kitchens, bathrooms, basements, additions, decks, and new homes.">
+<Layout
+  title="Projects"
+  description={`${totals.projects} documented REMODzz projects across ${totals.towns} towns in Northern Illinois and Southern Wisconsin: kitchens, baths, basements, additions, decks and new homes.`}
+>
+  <section class="page-hero grid-bg">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a><span aria-hidden="true">/</span><span>Projects</span></nav>
+      <h1 class="display-l">The project file.</h1>
+      <p class="lead">
+        {totals.projects} jobs, {totals.spaces} documented spaces, {totals.towns} towns. Every project carries a job number
+        from our NeoTek Construction days, and every one was documented from start to finish.
+      </p>
+    </div>
+  </section>
 
-  <section class="page-hero">
-    <div class="container">
-      <div class="breadcrumb">
-        <a href="/">Home</a> <span>/</span> <span>Portfolio</span>
+  <section class="section-sm">
+    <div class="wrap">
+      <div class="toolbar">
+        <div class="filters" role="group" aria-label="Filter by type">
+          <button class="chip" aria-pressed="true" data-filter="all">All <span class="count">{projects.length}</span></button>
+          {cats.map((c) => (
+            <button class="chip" aria-pressed="false" data-filter={c.slug}>{c.label} <span class="count">{c.count}</span></button>
+          ))}
+        </div>
+        <div class="field town-field">
+          <label for="townFilter">Town</label>
+          <select id="townFilter" class="select">
+            <option value="">All towns</option>
+            {towns.map((t) => <option value={t}>{t}</option>)}
+          </select>
+        </div>
       </div>
-      <h1>Project <span class="text-primary">Portfolio</span></h1>
-      <p>Browse our gallery of completed projects. Every project receives comprehensive before, during, and after documentation.</p>
-    </div>
-  </section>
 
-  <section class="section bg-darker">
-    <div class="container-wide">
-      <PortfolioGrid items={portfolioItems} categories={categories} showFilters={true} />
-    </div>
-  </section>
+      <p class="result mono" aria-live="polite" id="resultCount">Showing {projects.length} projects</p>
 
-  <section class="section-sm bg-dark">
-    <div class="container text-center">
-      <h2 data-animate>Like What You See?</h2>
-      <p style="color: var(--text); max-width: 500px; margin: 12px auto 28px;" data-animate>Let's discuss how we can transform your space.</p>
-      <div data-animate>
-        <a href="/contact" class="btn btn-primary btn-lg">Schedule a Consult</a>
+      <div class="grid" id="projectGrid">
+        {projects.map((p, i) => <ProjectCard project={p} eager={i < 3} />)}
+      </div>
+
+      <div class="empty" id="emptyState" hidden>
+        <p>No projects match that combination yet.</p>
+        <button class="btn btn-line btn-sm" id="resetFilters">Show all projects</button>
       </div>
     </div>
   </section>
-
 </Layout>
+
+<style>
+  .page-hero .lead { max-width: 62ch; }
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    padding-bottom: 24px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; flex: 1; }
+  .town-field { min-width: 220px; }
+  .result { color: var(--muted); font-size: 0.7rem; margin: 20px 0; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 340px), 1fr));
+    gap: 20px;
+  }
+  .grid > :global([hidden]) { display: none; }
+  .empty { padding: 64px 0; text-align: center; display: grid; justify-items: center; gap: 16px; color: var(--muted); }
+  @media (max-width: 640px) {
+    .filters { flex-wrap: nowrap; overflow-x: auto; margin: 0 calc(-1 * var(--gutter)); padding: 0 var(--gutter) 4px; scrollbar-width: none; }
+    .filters .chip { flex-shrink: 0; }
+    .town-field { width: 100%; }
+  }
+</style>
+
+<script>
+  const chips = Array.from(document.querySelectorAll<HTMLButtonElement>('[data-filter]'));
+  const townSel = document.getElementById('townFilter') as HTMLSelectElement;
+  const cards = Array.from(document.querySelectorAll<HTMLElement>('#projectGrid .pcard'));
+  const count = document.getElementById('resultCount')!;
+  const empty = document.getElementById('emptyState')!;
+
+  const params = new URLSearchParams(location.search);
+  let cat = params.get('type') || 'all';
+  let town = params.get('town') || '';
+  if (!chips.some((c) => c.dataset.filter === cat)) cat = 'all';
+  if (![...townSel.options].some((o) => o.value === town)) town = '';
+
+  const apply = () => {
+    let n = 0;
+    for (const card of cards) {
+      const ok = (cat === 'all' || (card.dataset.categories || '').split(' ').includes(cat)) && (!town || card.dataset.town === town);
+      card.hidden = !ok;
+      if (ok) n++;
+    }
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === cat)));
+    townSel.value = town;
+    count.textContent = `Showing ${n} project${n === 1 ? '' : 's'}${town ? ` in ${town}` : ''}`;
+    empty.hidden = n > 0;
+
+    const q = new URLSearchParams();
+    if (cat !== 'all') q.set('type', cat);
+    if (town) q.set('town', town);
+    history.replaceState(null, '', q.toString() ? `?${q}` : location.pathname);
+  };
+
+  chips.forEach((c) => c.addEventListener('click', () => { cat = c.dataset.filter!; apply(); }));
+  townSel.addEventListener('change', () => { town = townSel.value; apply(); });
+  document.getElementById('resetFilters')!.addEventListener('click', () => { cat = 'all'; town = ''; apply(); });
+  apply();
+</script>

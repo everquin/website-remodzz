@@ -1,228 +1,171 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import PortfolioGrid from '../../components/PortfolioGrid.astro';
-import { services } from '../../data/services';
-import { portfolioItems } from '../../data/portfolio';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { services, type Service } from '../../data/services';
+import { projectsIn, sheetPhoto, projectWithSheet, totals } from '../../data/projects';
+import { site } from '../../data/site';
 
 export function getStaticPaths() {
-  return services.map(service => ({
-    params: { slug: service.slug },
-    props: { service },
-  }));
+  return services.map((service) => ({ params: { slug: service.slug }, props: { service } }));
 }
 
-const { service } = Astro.props;
+interface Props { service: Service }
+const { service: s } = Astro.props;
 
-// Get portfolio items matching this service category
-const categoryMap: Record<string, string[]> = {
-  'kitchens': ['kitchens'],
-  'bathrooms': ['bathrooms'],
-  'basements': ['basements', 'theaters'],
-  'additions': ['additions'],
-  'decks-exteriors': ['decks'],
-  'new-homes': ['new-homes'],
-  'commercial': [],
-  'handyman': ['flooring'],
-};
-const cats = categoryMap[service.slug] || [];
-const servicePortfolio = cats.length ? portfolioItems.filter(p => cats.includes(p.category)) : [];
+const work = projectsIn(s.categories);
+const lead = projectWithSheet(s.sheet);
+const others = services.filter((o) => o.slug !== s.slug);
+const typeParam = s.categories[0];
 ---
 
-<Layout title={service.title} description={service.fullDescription.slice(0, 160)}>
-
-  <section class="page-hero">
-    <div class="container">
-      <div class="breadcrumb">
-        <a href="/">Home</a> <span>/</span> <a href="/services">Services</a> <span>/</span> <span>{service.shortTitle}</span>
+<Layout title={s.title} description={s.fullDescription.slice(0, 158)} image={sheetPhoto(s.sheet)}>
+  <section class="svc-hero">
+    <div class="wrap svc-hero-grid">
+      <div class="svc-hero-copy">
+        <nav class="crumbs" aria-label="Breadcrumb">
+          <a href="/">Home</a><span aria-hidden="true">/</span><a href="/services">Services</a><span aria-hidden="true">/</span><span>{s.shortTitle}</span>
+        </nav>
+        <h1 class="display-l">{s.title}</h1>
+        <p class="tagline">{s.tagline}</p>
+        <div class="actions">
+          <a href={`/contact?type=${typeParam}`} class="btn btn-red btn-lg">Get a free estimate <span class="arrow" aria-hidden="true">→</span></a>
+          <a href={site.phoneHref} class="btn btn-line btn-lg">{site.phone}</a>
+        </div>
       </div>
-      <h1><span style="font-size: 0.8em; margin-right: 8px;">{service.icon}</span> {service.title}</h1>
-      <p>{service.description}</p>
+      {lead && (
+        <a href={`/portfolio/${lead.slug}`} class="svc-hero-img">
+          <img src={sheetPhoto(s.sheet)} alt={`${lead.title}, ${lead.town}`} width="756" height="415" />
+          <span class="caption mono"><b>{lead.job}</b> {lead.title} · {lead.town}, {lead.state}</span>
+        </a>
+      )}
     </div>
   </section>
 
-  <section class="section bg-darker">
-    <div class="container">
-      <div class="service-detail-grid">
-        <div class="service-content" data-animate>
-          <h2>Overview</h2>
-          <p class="lead">{service.fullDescription}</p>
-
-          {service.features.length > 0 && (
-            <div class="features-section">
-              <h3>What We Offer</h3>
-              <div class="features-grid">
-                {service.features.map(f => (
-                  <div class="feature-item">
-                    <span class="feature-check">✓</span>
-                    <span>{f}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          <div class="service-cta">
-            <h3>Interested in {service.shortTitle}?</h3>
-            <p>Schedule a free consultation to discuss your project.</p>
-            <div style="display: flex; gap: 12px; flex-wrap: wrap;">
-              <a href="/contact" class="btn btn-primary">Get Free Estimate</a>
-              <a href="tel:8476037614" class="btn btn-ghost">📞 847.603.7614</a>
-            </div>
-          </div>
-        </div>
-
-        {service.images.length > 0 && (
-          <div class="service-images" data-animate>
-            {service.images.slice(0, 3).map((img, i) => (
-              <img
-                src={`/images/portfolio/${img}`}
-                alt={`${service.title} project ${i + 1}`}
-                loading={i === 0 ? 'eager' : 'lazy'}
-                class="service-img"
-              />
-            ))}
-          </div>
-        )}
+  <section class="section-sm">
+    <div class="wrap body-grid">
+      <div>
+        <p class="eyebrow">Overview</p>
+        <p class="overview">{s.fullDescription}</p>
+      </div>
+      <div>
+        <h2 class="list-title">What's included</h2>
+        <ul class="features">
+          {s.features.map((f, i) => (
+            <li><span class="mono red">{String(i + 1).padStart(2, '0')}</span>{f}</li>
+          ))}
+        </ul>
       </div>
     </div>
   </section>
 
-  {servicePortfolio.length > 0 && (
-    <section class="section bg-dark">
-      <div class="container">
-        <div class="section-header" data-animate>
-          <span class="section-label">Our Work</span>
-          <h2 class="section-title">{service.shortTitle} Portfolio</h2>
+  <section class="section-sm">
+    <div class="wrap">
+      <div class="promise-strip bg-ink">
+        <div><span class="mono red">Proposal</span><p>54+ categories, line by line, in writing.</p></div>
+        <div><span class="mono red">Design</span><p>In-house layouts and renderings, included.</p></div>
+        <div><span class="mono red">Schedule</span><p>A guaranteed calendar, with penalties on us.</p></div>
+        <div><span class="mono red">Warranty</span><p>Two years on every project type.</p></div>
+      </div>
+    </div>
+  </section>
+
+  {work.length > 0 && (
+    <section class="section-sm">
+      <div class="wrap">
+        <div class="work-head">
+          <h2 class="display-m">{s.shortTitle} from the project file</h2>
+          <a href={`/portfolio?type=${typeParam}`} class="link-arrow">See all {work.length} →</a>
         </div>
-        <PortfolioGrid items={servicePortfolio} showFilters={false} />
-        <div class="text-center" style="margin-top: 32px;">
-          <a href="/portfolio" class="btn btn-outline">View Full Portfolio</a>
+        <div class="work-grid">
+          {work.slice(0, 6).map((p) => <ProjectCard project={p} />)}
         </div>
       </div>
     </section>
   )}
 
-  <!-- Other Services -->
-  <section class="section-sm bg-darker">
-    <div class="container">
-      <h3 class="text-center" style="margin-bottom: 24px;" data-animate>Other Services</h3>
-      <div class="other-services">
-        {services.filter(s => s.slug !== service.slug).map(s => (
-          <a href={`/services/${s.slug}`} class="other-service-link">
-            <span>{s.icon}</span> {s.shortTitle}
-          </a>
-        ))}
+  <section class="section-sm bg-paper-2 others">
+    <div class="wrap">
+      <p class="eyebrow">Other services</p>
+      <div class="others-list">
+        {others.map((o) => <a href={`/services/${o.slug}`} class="chip">{o.shortTitle}</a>)}
+        <a href="/portfolio" class="chip">All {totals.projects} projects →</a>
       </div>
     </div>
   </section>
-
 </Layout>
 
 <style>
-  .service-detail-grid {
+  .svc-hero {
+    padding: calc(var(--header-h) + clamp(40px, 6vw, 72px)) 0 clamp(40px, 5vw, 64px);
+    border-bottom: 1px solid var(--line);
+  }
+  .svc-hero-grid {
     display: grid;
-    grid-template-columns: 1.3fr 1fr;
-    gap: 60px;
-    align-items: start;
-  }
-  .service-content h2 {
-    font-size: 1.6rem;
-    margin-bottom: 16px;
-  }
-  .lead {
-    font-size: 1.1rem;
-    color: var(--text);
-    line-height: 1.8;
-    margin-bottom: 36px;
-  }
-  .features-section {
-    margin-bottom: 40px;
-  }
-  .features-section h3 {
-    font-size: 1.2rem;
-    margin-bottom: 20px;
-  }
-  .features-grid {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-  .feature-item {
-    display: flex;
-    align-items: flex-start;
-    gap: 12px;
-    font-size: 0.95rem;
-    color: var(--text);
-    padding: 10px 16px;
-    background: rgba(255,255,255,0.02);
-    border-radius: var(--radius);
-    border: 1px solid var(--border);
-  }
-  .feature-check {
-    color: var(--primary);
-    font-weight: 700;
-    flex-shrink: 0;
-  }
-  .service-cta {
-    background: var(--card);
-    border: 1px solid var(--primary-border);
-    border-radius: var(--radius-lg);
-    padding: 32px;
-  }
-  .service-cta h3 {
-    font-size: 1.2rem;
-    margin-bottom: 8px;
-  }
-  .service-cta p {
-    color: var(--text);
-    margin-bottom: 20px;
-  }
-  .service-images {
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    position: sticky;
-    top: calc(var(--nav-height) + 20px);
-  }
-  .service-img {
-    width: 100%;
-    border-radius: var(--radius-lg);
-    object-fit: cover;
-    max-height: 280px;
-  }
-  .other-services {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    justify-content: center;
-  }
-  .other-service-link {
-    display: inline-flex;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 5vw, 72px);
     align-items: center;
-    gap: 6px;
-    padding: 10px 20px;
+  }
+  .svc-hero h1 { margin: 20px 0 16px; }
+  .tagline { font-size: clamp(1.15rem, 1.8vw, 1.4rem); color: var(--muted); max-width: 30ch; }
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+  .svc-hero-img {
+    display: block;
     background: var(--card);
-    border: 1px solid var(--border);
-    border-radius: var(--radius-full);
-    color: var(--text);
-    font-size: 0.9rem;
-    transition: all 0.2s;
+    padding: 8px 8px 0;
+    border: 1px solid var(--line);
+    transform: rotate(1.5deg);
+    box-shadow: 0 30px 60px -36px rgba(20, 19, 18, 0.6);
+    transition: transform 0.4s var(--ease);
   }
-  .other-service-link:hover {
-    border-color: var(--primary-border);
-    color: var(--primary);
-    background: var(--primary-glow);
+  .svc-hero-img:hover { transform: rotate(0deg); }
+  .svc-hero-img img { width: 100%; }
+  .caption { display: flex; gap: 8px; padding: 10px 2px 12px; font-size: 0.66rem; color: var(--muted); }
+  .caption b { color: var(--red-ink); font-weight: 600; }
+
+  .body-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: clamp(32px, 6vw, 96px);
   }
+  .overview {
+    margin-top: 20px;
+    font-size: clamp(1.15rem, 1.6vw, 1.3rem);
+    line-height: 1.6;
+    color: var(--ink);
+  }
+  .list-title { font-size: 1.5rem; padding-bottom: 14px; border-bottom: 2px solid var(--ink); }
+  .features li {
+    display: grid;
+    grid-template-columns: 36px 1fr;
+    gap: 8px;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .features .mono { padding-top: 3px; font-size: 0.7rem; }
+
+  .promise-strip {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-radius: var(--radius);
+  }
+  .promise-strip > div { padding: 24px; border-right: 1px solid var(--line-dark); }
+  .promise-strip > div:last-child { border-right: 0; }
+  .promise-strip p { color: var(--paper); font-weight: 600; margin-top: 8px; line-height: 1.35; }
+
+  .work-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: 16px; margin-bottom: 28px; }
+  .work-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+  .others { margin-top: clamp(32px, 5vw, 64px); }
+  .others-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 20px; }
+  .others-list .chip { background: var(--card); }
+
   @media (max-width: 900px) {
-    .service-detail-grid { grid-template-columns: 1fr; }
-    .service-images {
-      position: static;
-      flex-direction: row;
-      overflow-x: auto;
-    }
-    .service-img {
-      min-width: 280px;
-      max-height: 220px;
-    }
+    .svc-hero-grid, .body-grid { grid-template-columns: 1fr; }
+    .promise-strip { grid-template-columns: 1fr 1fr; }
+    .promise-strip > div:nth-child(2) { border-right: 0; }
+    .promise-strip > div:nth-child(-n + 2) { border-bottom: 1px solid var(--line-dark); }
+    .work-grid { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 600px) {
+    .work-grid { grid-template-columns: 1fr; }
   }
 </style>

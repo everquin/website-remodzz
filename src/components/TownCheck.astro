@@ -1,0 +1,64 @@
+---
+import { serviceArea } from '../data/site';
+import { projectsByTown } from '../data/projects';
+
+interface Props { dark?: boolean }
+const { dark = false } = Astro.props;
+
+const towns = serviceArea.flatMap((c) =>
+  c.towns.map((t) => ({ town: t, county: c.county, state: c.state, projects: projectsByTown[t] || 0 }))
+);
+const id = `town-${Math.random().toString(36).slice(2, 7)}`;
+---
+
+<div class:list={['towncheck', { dark }]} data-towns={JSON.stringify(towns)}>
+  <label for={id} class="mono">Do we work in your town?</label>
+  <div class="tc-row">
+    <input id={id} class="input tc-input" type="text" placeholder="Start typing a town…" autocomplete="address-level2" />
+  </div>
+  <p class="tc-result" aria-live="polite">
+    <span class="tc-idle">We serve {towns.length}+ communities across 7 counties in Illinois and Wisconsin.</span>
+  </p>
+</div>
+
+<style>
+  .towncheck { display: grid; gap: 10px; max-width: 560px; }
+  .towncheck label { color: var(--muted); font-size: 0.75rem; }
+  .tc-input { font-size: 1.15rem; min-height: 60px; }
+  .tc-result { min-height: 3.2em; color: var(--muted); font-size: 0.98rem; }
+  .tc-result :global(strong) { color: var(--ink); }
+  .tc-result :global(a) { color: var(--red-ink); font-weight: 700; border-bottom: 1.5px solid currentColor; }
+  .tc-result :global(.yes)::before { content: '✓ '; color: var(--red); font-weight: 800; }
+  .dark label, .dark .tc-result { color: #a19b8f; }
+  .dark .tc-result :global(strong) { color: var(--paper); }
+  .dark .tc-result :global(a) { color: var(--paper); }
+  .dark .tc-input { background: var(--ink-2); border-color: rgba(243, 239, 230, 0.25); color: var(--paper); }
+</style>
+
+<script>
+  type Town = { town: string; county: string; state: string; projects: number };
+  document.querySelectorAll<HTMLElement>('.towncheck').forEach((root) => {
+    const towns: Town[] = JSON.parse(root.dataset.towns || '[]');
+    const input = root.querySelector('input')!;
+    const out = root.querySelector('.tc-result')!;
+    const idle = out.innerHTML;
+    const norm = (s: string) => s.toLowerCase().replace(/[^a-z]/g, '');
+
+    input.addEventListener('input', () => {
+      const q = norm(input.value);
+      if (q.length < 2) { out.innerHTML = idle; return; }
+      const hits = towns.filter((t) => norm(t.town).startsWith(q));
+      const exact = towns.find((t) => norm(t.town) === q) || (hits.length === 1 ? hits[0] : undefined);
+      if (exact) {
+        const proj = exact.projects
+          ? ` We've completed <a href="/portfolio?town=${encodeURIComponent(exact.town)}">${exact.projects} documented project${exact.projects > 1 ? 's' : ''}</a> there.`
+          : '';
+        out.innerHTML = `<span class="yes"><strong>Yes, ${exact.town}</strong> (${exact.county}, ${exact.state}) is in our service area.${proj}</span>`;
+      } else if (hits.length) {
+        out.innerHTML = `Did you mean ${hits.slice(0, 4).map((h) => `<strong>${h.town}</strong>`).join(', ')}?`;
+      } else {
+        out.innerHTML = `We don't list that town, but we may still be able to help. <a href="/contact">Ask us about your location</a>.`;
+      }
+    });
+  });
+</script>

@@ -1,0 +1,107 @@
+---
+// Illustrative project calendar (weeks). Labeled as an example on the page.
+const weeks = 10;
+const rows: { task: string; start: number; len: number; milestone?: boolean }[] = [
+  { task: 'Design & selections', start: 0, len: 2 },
+  { task: 'Permits', start: 1, len: 1.5 },
+  { task: 'Demolition', start: 2.5, len: 0.5 },
+  { task: 'Rough-in: plumbing & electric', start: 3, len: 1.5 },
+  { task: 'Inspection', start: 4.5, len: 0, milestone: true },
+  { task: 'Drywall & paint prep', start: 4.6, len: 1.4 },
+  { task: 'Cabinets & countertops', start: 6, len: 1.5 },
+  { task: 'Tile, trim & finishes', start: 7.5, len: 1.2 },
+  { task: 'Walkthrough', start: 9, len: 0, milestone: true },
+];
+const pct = (w: number) => `${(w / weeks) * 100}%`;
+---
+
+<figure class="gantt" aria-label="Example project schedule">
+  <div class="g-head">
+    <span class="mono">Calendar of events</span>
+    <span class="mono legend"><i></i> Completion date, guaranteed</span>
+  </div>
+  <div class="g-grid">
+    <div class="g-weeks" aria-hidden="true">
+      {Array.from({ length: weeks }, (_, i) => <span class="mono">W{i + 1}</span>)}
+    </div>
+    {rows.map((r) => (
+      <div class="g-row">
+        <span class="g-task">{r.task}</span>
+        <div class="g-track">
+          {r.milestone
+            ? <span class="g-ms" style={`left:${pct(r.start)}`} title={r.task}></span>
+            : <span class="g-bar" style={`left:${pct(r.start)};width:${pct(r.len)}`}></span>}
+        </div>
+      </div>
+    ))}
+    <div class="g-deadline" aria-hidden="true"></div>
+  </div>
+  <figcaption class="mono">Example schedule · penalties apply to us if we miss the date</figcaption>
+</figure>
+
+<style>
+  .gantt {
+    background: var(--ink-2);
+    border: 1px solid var(--line-dark);
+    border-radius: var(--radius);
+    padding: 20px;
+    color: #cfc9bd;
+  }
+  .g-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 8px;
+    padding-bottom: 14px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--line-dark);
+  }
+  .g-head .mono { font-size: 0.66rem; color: #a19b8f; }
+  .legend { display: inline-flex; align-items: center; gap: 8px; }
+  .legend i { width: 2px; height: 12px; background: var(--red); display: inline-block; }
+  .g-grid { position: relative; --label: 42%; }
+  .g-weeks {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    margin-left: var(--label);
+    padding-bottom: 6px;
+  }
+  .g-weeks .mono { font-size: 0.56rem; color: #7d776c; }
+  .g-row {
+    display: grid;
+    grid-template-columns: var(--label) 1fr;
+    align-items: center;
+    min-height: 30px;
+    border-top: 1px solid rgba(243, 239, 230, 0.06);
+  }
+  .g-task { font-size: 0.82rem; padding-right: 10px; line-height: 1.2; }
+  .g-track { position: relative; height: 30px; }
+  .g-bar {
+    position: absolute;
+    top: 9px;
+    height: 12px;
+    background: var(--paper);
+    border-radius: 2px;
+  }
+  .g-ms {
+    position: absolute;
+    top: 9px;
+    width: 12px;
+    height: 12px;
+    background: var(--red);
+    transform: translateX(-6px) rotate(45deg);
+  }
+  .g-deadline {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: calc(var(--label) + (100% - var(--label)) * (9.4 / 10));
+    width: 2px;
+    background: var(--red);
+  }
+  figcaption { margin-top: 14px; font-size: 0.62rem; color: #7d776c; }
+  @media (max-width: 480px) {
+    .g-grid { --label: 50%; }
+    .g-task { font-size: 0.74rem; }
+  }
+</style>

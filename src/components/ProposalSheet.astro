@@ -1,0 +1,86 @@
+---
+// Illustrative excerpt of a REMODzz proposal. Labeled as a sample on the page.
+const lines: [string, string, 'Included' | 'Allowance' | 'By owner'][] = [
+  ['01', 'Permits & inspections', 'Included'],
+  ['04', 'Demolition & haul-away', 'Included'],
+  ['09', 'Framing modifications', 'Included'],
+  ['12', 'Electrical: circuits & lighting', 'Included'],
+  ['14', 'Plumbing: rough-in & fixtures', 'Included'],
+  ['21', 'Custom cabinetry', 'Allowance'],
+  ['23', 'Countertops', 'Allowance'],
+  ['31', 'Appliances', 'By owner'],
+  ['38', 'Tile & backsplash', 'Included'],
+  ['47', 'Paint & trim', 'Included'],
+  ['54', 'Final clean & walkthrough', 'Included'],
+];
+---
+
+<figure class="sheet" aria-label="Sample proposal excerpt">
+  <header>
+    <div>
+      <span class="mono">Proposal</span>
+      <strong>Kitchen Remodel</strong>
+    </div>
+    <span class="stamp mono">Sample excerpt</span>
+  </header>
+  <ol>
+    {lines.map(([n, name, status]) => (
+      <li>
+        <span class="n mono">{n}</span>
+        <span class="name">{name}</span>
+        <span class:list={['status', 'mono', status === 'Included' ? 'inc' : 'other']}>{status}</span>
+      </li>
+    ))}
+  </ol>
+  <figcaption class="mono">54 categories · every line priced, allowed for or excluded in writing</figcaption>
+</figure>
+
+<style>
+  .sheet {
+    background: var(--card);
+    color: var(--text);
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    box-shadow: 0 30px 60px -30px rgba(0, 0, 0, 0.5);
+    padding: 22px 22px 18px;
+    font-size: 0.92rem;
+    transform: rotate(-1.2deg);
+  }
+  header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 12px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--ink);
+  }
+  header div { display: grid; }
+  header .mono { font-size: 0.66rem; color: var(--muted); }
+  header strong {
+    font-family: var(--font-display);
+    font-stretch: 112%;
+    font-size: 1.25rem;
+    color: var(--ink);
+  }
+  .stamp {
+    border: 1.5px solid var(--red);
+    color: var(--red);
+    padding: 4px 8px;
+    font-size: 0.62rem;
+    transform: rotate(4deg);
+  }
+  ol { display: grid; }
+  li {
+    display: grid;
+    grid-template-columns: 30px 1fr auto;
+    align-items: baseline;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px dashed var(--line-strong);
+  }
+  .n { color: var(--muted); font-size: 0.7rem; }
+  .status { font-size: 0.62rem; padding: 2px 6px; border-radius: 2px; }
+  .inc { color: var(--ink); background: var(--paper-2); }
+  .other { color: var(--blue); border: 1px solid currentColor; }
+  figcaption { margin-top: 14px; font-size: 0.64rem; color: var(--muted); text-transform: uppercase; }
+</style>

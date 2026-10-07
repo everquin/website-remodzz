@@ -1,329 +1,553 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import ServiceCard from '../components/ServiceCard.astro';
-import PortfolioGrid from '../components/PortfolioGrid.astro';
-import { services, additionalServices } from '../data/services';
-import { portfolioItems, categories } from '../data/portfolio';
+import ProjectCard from '../components/ProjectCard.astro';
+import ProposalSheet from '../components/ProposalSheet.astro';
+import ScheduleChart from '../components/ScheduleChart.astro';
+import TownCheck from '../components/TownCheck.astro';
+import { services } from '../data/services';
+import { site, serviceArea } from '../data/site';
+import { projects, totals, projectsIn, sheetPhoto } from '../data/projects';
 
-// Pick a mix of before/after pairs and cover shots for the homepage
-const featuredPortfolio = portfolioItems.filter(p =>
-  p.imageLabel && (p.imageLabel.includes('After') || p.imageLabel.includes('Cover') || p.imageLabel.includes('Render') || p.imageLabel.includes('Completed'))
-).slice(0, 12);
+// Every documented space, tagged with its job, for the hero contact sheet + ticker.
+// Round-robin across projects so one big job doesn't fill a whole column.
+const perProject = projects.map((p) => p.spaces.map((s) => ({ ...s, job: p.job, town: p.town })));
+const sheets = Array.from({ length: Math.max(...perProject.map((s) => s.length)) }, (_, round) =>
+  perProject.map((s) => s[round]).filter(Boolean)
+).flat();
+const colA = sheets.filter((_, i) => i % 2 === 0);
+const colB = sheets.filter((_, i) => i % 2 === 1);
+
+const featured = projects.filter((p) => p.featured).slice(0, 5);
+
+const planning = [
+  { label: 'Kitchen', type: 'kitchen' },
+  { label: 'Bathroom', type: 'bathroom' },
+  { label: 'Basement', type: 'basement' },
+  { label: 'Addition', type: 'addition' },
+  { label: 'Deck or patio', type: 'outdoor' },
+  { label: 'New home', type: 'new-home' },
+  { label: 'Something else', type: 'other' },
+];
+
+const promises = [
+  { n: '01', title: 'A proposal with nothing left out', body: 'Every proposal works through 54+ project categories. You see what is included, what is an allowance and what is excluded, before anything is signed. No surprises, no hidden costs.' },
+  { n: '02', title: 'Design included, in-house', body: 'Layouts, renderings and 3D views come from our own design team, so the budget is accurate and you can see the finished space before we break ground.' },
+  { n: '03', title: 'A schedule we put penalties on', body: 'You get a detailed calendar of events, with penalties on us if we miss the completion date. Trades, inspections and progress are communicated as they happen.' },
+  { n: '04', title: 'Custom cabinetry at stock prices', body: 'In-house fabrication and trusted trade partners mean unlimited styles, woods and finishes at prices comparable to stock. Creative storage is our specialty.' },
+  { n: '05', title: 'A two-year warranty', body: 'Every project type is covered for two years. If something isn\'t right, we make it right.' },
+];
+
+const steps = [
+  { n: '01', title: 'Consultation', body: 'We meet at your home, walk the space and talk through your goals, timeline and budget. No pressure.' },
+  { n: '02', title: 'Design & proposal', body: 'Renderings, layouts and a line-by-line proposal across 54+ categories.' },
+  { n: '03', title: 'Build', body: 'Construction starts on a guaranteed calendar. We coordinate every trade and inspection.' },
+  { n: '04', title: 'Walkthrough', body: 'We walk the finished work with you, and your two-year warranty begins.' },
+];
 ---
 
-<Layout title="Home" description="REMODzz — Premier remodeling and new home construction serving Northern Illinois & Southern Wisconsin. Kitchens, bathrooms, basements, additions, decks, new homes, handyman.">
+<Layout title="Home">
+  <!-- ============ HERO ============ -->
+  <section class="hero grid-bg">
+    <div class="wrap hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow">Remodeling &amp; new homes · Northern IL + Southern WI</p>
+        <h1 class="display-xl">You know<br />you <span class="red">want&nbsp;to.</span></h1>
+        <p class="lead">Kitchens, baths, basements, additions and new homes, built from a proposal that leaves nothing out and a schedule we guarantee in writing.</p>
 
-  <!-- HERO -->
-  <section class="hero">
-    <div class="hero-bg">
-      <div class="hero-overlay"></div>
-    </div>
-    <div class="container hero-content">
-      <div class="hero-text">
-        <img src="/images/remodzz-logo-full.png" alt="REMODzz" class="hero-logo animate-fade-up" />
-        <span class="badge animate-fade-up delay-1">Northern Illinois & Southern Wisconsin</span>
-        <h1 class="animate-fade-up delay-2">You Know You<br><span class="text-primary">Want To</span></h1>
-        <p class="animate-fade-up delay-3">Transform your home with the region's most trusted construction experts. From kitchen remodels to complete new home construction — on schedule and on budget.</p>
-        <div class="hero-actions animate-fade-up delay-3">
-          <a href="/contact" class="btn btn-primary btn-lg">Schedule a Consult</a>
-          <a href="/portfolio" class="btn btn-outline btn-lg">View Our Work</a>
+        <div class="planner">
+          <p class="mono">What are you planning?</p>
+          <div class="planner-chips">
+            {planning.map((p) => (
+              <a class="chip" href={`/contact?type=${p.type}`}>{p.label}</a>
+            ))}
+          </div>
         </div>
-        <div class="hero-stats animate-fade-up delay-4">
-          <div class="stat">
-            <strong>20+</strong>
-            <span>Years Experience</span>
+
+        <div class="hero-alt">
+          <a href={site.phoneHref} class="link-arrow">Or call {site.phone}</a>
+          <span class="mono muted">{site.hours[0].days} {site.hours[0].time}</span>
+        </div>
+      </div>
+
+      <div class="hero-sheets" aria-hidden="true">
+        <div class="sheet-col">
+          <div class="sheet-track">
+            {[...colA, ...colA].map((s) => (
+              <figure class="sheet-tile">
+                <img src={sheetPhoto(s.sheet)} alt="" width="756" height="415" loading="lazy" />
+                <figcaption class="mono"><b>{s.job}</b> {s.town}</figcaption>
+              </figure>
+            ))}
           </div>
-          <div class="stat">
-            <strong>500+</strong>
-            <span>Projects Completed</span>
-          </div>
-          <div class="stat">
-            <strong>2 yr</strong>
-            <span>Warranty Coverage</span>
+        </div>
+        <div class="sheet-col reverse">
+          <div class="sheet-track">
+            {[...colB, ...colB].map((s) => (
+              <figure class="sheet-tile">
+                <img src={sheetPhoto(s.sheet)} alt="" width="756" height="415" loading="lazy" />
+                <figcaption class="mono"><b>{s.job}</b> {s.town}</figcaption>
+              </figure>
+            ))}
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SERVICES OVERVIEW -->
-  <section class="section bg-darker" id="services">
-    <div class="container">
-      <div class="section-header" data-animate>
-        <span class="section-label">What We Do</span>
-        <h2 class="section-title">Expert Services</h2>
-        <p class="section-desc">From simple repairs to complete home transformations, we have the experience and skill to make your project a success.</p>
+  <!-- ============ TICKER ============ -->
+  <div class="ticker bg-ink" aria-label="Recent project log">
+    <div class="ticker-track">
+      {[0, 1].map((dup) => (
+        <ul aria-hidden={dup === 1 ? 'true' : undefined}>
+          {projects.map((p) => (
+            <li><span class="mono red">{p.job}</span> {p.title} <span class="mono">{p.town}, {p.state}</span></li>
+          ))}
+        </ul>
+      ))}
+    </div>
+  </div>
+
+  <!-- ============ NUMBERS ============ -->
+  <section class="numbers wrap">
+    <dl>
+      <div data-reveal><dt class="mono">Documented projects</dt><dd>{totals.projects}</dd></div>
+      <div data-reveal><dt class="mono">Spaces on file</dt><dd>{totals.spaces}</dd></div>
+      <div data-reveal><dt class="mono">Proposal categories</dt><dd>54+</dd></div>
+      <div data-reveal><dt class="mono">Warranty, every job</dt><dd>2<small>yr</small></dd></div>
+      <div data-reveal><dt class="mono">Counties served</dt><dd>{serviceArea.length}</dd></div>
+    </dl>
+  </section>
+
+  <!-- ============ SERVICES ============ -->
+  <section class="section" id="services">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="eyebrow">What we build</p>
+          <h2 class="display-l">One contractor,<br />every room.</h2>
+        </div>
+        <p>From a single bathroom to a second story or a brand-new home, the same team designs it, prices it line by line and builds it.</p>
       </div>
-      <div class="grid grid-4">
-        {services.map(s => (
-          <ServiceCard
-            title={s.shortTitle}
-            icon={s.icon}
-            description={s.description}
-            href={`/services/${s.slug}`}
-          />
+
+      <ol class="svc-list">
+        {services.map((s, i) => {
+          const work = projectsIn(s.categories);
+          const img = sheetPhoto(s.sheet);
+          return (
+            <li data-reveal>
+              <a href={`/services/${s.slug}`} class="svc-row">
+                <span class="svc-n mono">{String(i + 1).padStart(2, '0')}</span>
+                <span class="svc-title">{s.shortTitle}</span>
+                <span class="svc-tag">{s.tagline}</span>
+                <span class="svc-count mono">{work.length ? `${work.length} project${work.length > 1 ? 's' : ''}` : 'Ask us'}</span>
+                <span class="svc-arrow" aria-hidden="true">→</span>
+                {img && <img class="svc-peek" src={img} alt="" width="756" height="415" loading="lazy" />}
+              </a>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============ DIFFERENCE ============ -->
+  <section class="section bg-ink grid-bg diff" id="difference">
+    <div class="wrap diff-grid">
+      <div class="diff-copy">
+        <p class="eyebrow">The REMODzz difference</p>
+        <h2 class="display-l">The proof is in the <span class="red">paperwork.</span></h2>
+        <p class="lead">Most contractors don't offer this level of transparency. We put it in writing before the first wall comes down.</p>
+        <ol class="promises">
+          {promises.map((p) => (
+            <li data-reveal>
+              <span class="mono red">{p.n}</span>
+              <div>
+                <h3>{p.title}</h3>
+                <p>{p.body}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+      <div class="diff-art">
+        <div class="diff-sticky">
+          <ProposalSheet />
+          <ScheduleChart />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FEATURED WORK ============ -->
+  <section class="section">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="eyebrow">Project files</p>
+          <h2 class="display-l">Real jobs.<br />Real job numbers.</h2>
+        </div>
+        <p>Every project we take on gets a job number and is documented from start to finish. Here are a few from the file.</p>
+      </div>
+
+      <div class="feature-grid">
+        {featured.map((p, i) => (
+          <div class:list={['fg-item', `fg-${i}`]} data-reveal>
+            <ProjectCard project={p} large={i === 0} />
+          </div>
         ))}
       </div>
-      <div class="grid grid-3" style="margin-top: 24px;">
-        {additionalServices.map(s => (
-          <ServiceCard
-            title={s.title}
-            icon={s.icon}
-            description={s.description}
-          />
+
+      <div class="feature-more" data-reveal>
+        <a href="/portfolio" class="btn btn-lg">Browse all {totals.projects} projects <span class="arrow" aria-hidden="true">→</span></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ PROCESS ============ -->
+  <section class="section bg-paper-2" id="process">
+    <div class="wrap">
+      <div class="section-head" data-reveal>
+        <div>
+          <p class="eyebrow">How it works</p>
+          <h2 class="display-l">Four steps.<br />Zero guesswork.</h2>
+        </div>
+        <p>You'll know what's happening, who's on site and what comes next at every stage.</p>
+      </div>
+      <ol class="steps">
+        {steps.map((s) => (
+          <li data-reveal>
+            <span class="step-n">{s.n}</span>
+            <h3>{s.title}</h3>
+            <p>{s.body}</p>
+          </li>
         ))}
-      </div>
+      </ol>
     </div>
   </section>
 
-  <!-- WHY CHOOSE US HIGHLIGHT -->
-  <section class="section bg-dark" id="why-us">
-    <div class="container">
-      <div class="why-grid">
-        <div class="why-text" data-animate>
-          <span class="section-label">The REMODzz Difference</span>
-          <h2 class="section-title">Five Reasons We Stand Apart</h2>
-          <p>95% of contractors don't offer our level of transparency and commitment. Here's what makes us different.</p>
-          <div class="advantages-list">
-            <div class="advantage">
-              <div class="advantage-num">1</div>
-              <div>
-                <h4>Detailed Proposals</h4>
-                <p>54+ project categories examined. No surprises, no hidden costs.</p>
-              </div>
-            </div>
-            <div class="advantage">
-              <div class="advantage-num">2</div>
-              <div>
-                <h4>In-House Design</h4>
-                <p>Professional renderings and layouts before construction begins.</p>
-              </div>
-            </div>
-            <div class="advantage">
-              <div class="advantage-num">3</div>
-              <div>
-                <h4>Guaranteed Schedules</h4>
-                <p>Calendar of events with penalties if we miss our dates.</p>
-              </div>
-            </div>
-            <div class="advantage">
-              <div class="advantage-num">4</div>
-              <div>
-                <h4>Custom Cabinetry</h4>
-                <p>Unlimited options at competitive pricing. Creative storage is our specialty.</p>
-              </div>
-            </div>
-            <div class="advantage">
-              <div class="advantage-num">5</div>
-              <div>
-                <h4>Two-Year Warranty</h4>
-                <p>Industry-leading protection across all project types.</p>
-              </div>
-            </div>
+  <!-- ============ AREA ============ -->
+  <section class="section area">
+    <div class="wrap area-grid">
+      <div data-reveal>
+        <p class="eyebrow">Service area</p>
+        <h2 class="display-l">Local to<br />two states.</h2>
+        <p class="lead" style="margin: 20px 0 32px;">We know the local codes, the climate and the neighborhoods, from Lake County to Milwaukee.</p>
+        <TownCheck />
+      </div>
+      <div class="counties" data-reveal>
+        {['IL', 'WI'].map((st) => (
+          <div class="state">
+            <h3 class="mono">{st === 'IL' ? 'Illinois' : 'Wisconsin'}</h3>
+            <ul>
+              {serviceArea.filter((c) => c.state === st).map((c) => (
+                <li><span>{c.county}</span><span class="mono muted">{c.towns.length} towns</span></li>
+              ))}
+            </ul>
           </div>
-          <a href="/about#advantages" class="btn btn-outline" style="margin-top: 24px;">Learn More</a>
-        </div>
-        <div class="why-image" data-animate>
-          <img src="/images/portfolio/deck-greenoaks-after.jpg" alt="Quality craftsmanship by REMODzz" loading="lazy">
-        </div>
+        ))}
+        <a href="/service-areas" class="link-arrow">Full list of towns →</a>
       </div>
     </div>
   </section>
-
-  <!-- FEATURED PORTFOLIO -->
-  <section class="section bg-darker">
-    <div class="container">
-      <div class="section-header" data-animate>
-        <span class="section-label">Our Work</span>
-        <h2 class="section-title">Featured Projects</h2>
-        <p class="section-desc">Browse a selection from our portfolio of completed projects across Northern Illinois and Southern Wisconsin.</p>
-      </div>
-      <PortfolioGrid items={featuredPortfolio} showFilters={false} />
-      <div class="text-center" style="margin-top: 40px;" data-animate>
-        <a href="/portfolio" class="btn btn-outline">View Full Portfolio</a>
-      </div>
-    </div>
-  </section>
-
-  <!-- CTA -->
-  <section class="cta-section">
-    <div class="container">
-      <div class="cta-card" data-animate>
-        <div class="cta-content">
-          <h2>Ready to Transform Your Space?</h2>
-          <p>Schedule your free, no-hassle consultation today. We'll discuss your vision, timeline, and budget — and show you why hundreds of homeowners trust REMODzz.</p>
-        </div>
-        <div class="cta-actions">
-          <a href="/contact" class="btn btn-primary btn-lg">Get Free Estimate</a>
-          <a href="tel:8476037614" class="btn btn-ghost btn-lg">📞 847.603.7614</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
 </Layout>
 
 <style>
-  /* Hero */
+  /* ---------- hero ---------- */
   .hero {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
     position: relative;
+    padding-top: var(--header-h);
     overflow: hidden;
+    border-bottom: 1px solid var(--line);
   }
-  .hero-bg {
+  .hero::after {
+    content: '';
     position: absolute;
     inset: 0;
-    background: url('/images/hero-bg.jpg') center/cover no-repeat;
+    background: linear-gradient(90deg, var(--paper) 30%, rgba(243, 239, 230, 0.6) 60%, rgba(243, 239, 230, 0) 100%);
+    pointer-events: none;
   }
-  .hero-overlay {
-    position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(10,10,10,0.92) 0%, rgba(10,10,10,0.65) 50%, rgba(10,10,10,0.4) 100%);
+  .hero-grid {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    gap: 48px;
+    min-height: min(860px, calc(100svh - var(--header-h)));
   }
-  .hero-content {
+  .hero-copy {
     position: relative;
     z-index: 2;
-    padding-top: var(--nav-height);
+    align-self: center;
+    padding: clamp(48px, 8vh, 96px) 0;
   }
-  .hero-text {
-    max-width: 680px;
+  .hero-copy h1 { margin: 24px 0 28px; font-size: clamp(3rem, 7vw, 6.5rem); }
+  .hero-copy .lead { max-width: 34ch; font-size: clamp(1.15rem, 1.7vw, 1.4rem); }
+  .planner { margin-top: 40px; }
+  .planner > .mono { color: var(--muted); margin-bottom: 14px; font-size: 0.72rem; }
+  .planner-chips { display: flex; flex-wrap: wrap; gap: 8px; max-width: 560px; }
+  .planner-chips .chip { background: var(--card); }
+  .planner-chips .chip:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+  .hero-alt { display: flex; flex-wrap: wrap; align-items: center; gap: 12px 20px; margin-top: 32px; }
+
+  .hero-sheets {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    height: 100%;
+    max-height: 860px;
+    margin-right: calc(-1 * var(--gutter));
+    transform: rotate(-4deg) scale(1.12);
+    transform-origin: center;
+    mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent);
+    -webkit-mask-image: linear-gradient(transparent, #000 12%, #000 88%, transparent);
   }
-  .hero-logo {
-    width: clamp(280px, 45vw, 480px);
-    height: auto;
-    margin-bottom: 24px;
-    filter: drop-shadow(0 2px 20px rgba(0,0,0,0.6));
+  .sheet-col { overflow: hidden; }
+  .sheet-track {
+    display: grid;
+    gap: 14px;
+    animation: rise 140s linear infinite;
   }
-  .hero h1 {
-    font-size: clamp(2.8rem, 6vw, 4.5rem);
+  .reverse .sheet-track { animation-direction: reverse; animation-duration: 160s; }
+  @keyframes rise { to { transform: translateY(-50%); } }
+  .hero-sheets:hover .sheet-track { animation-play-state: paused; }
+  .sheet-tile {
+    position: relative;
+    background: var(--card);
+    padding: 6px 6px 0;
+    border: 1px solid var(--line);
+    box-shadow: 0 10px 24px -16px rgba(20, 19, 18, 0.4);
+  }
+  .sheet-tile img { width: 100%; aspect-ratio: 756 / 415; object-fit: cover; }
+  .sheet-tile figcaption { padding: 7px 2px 8px; font-size: 0.6rem; color: var(--muted); display: flex; gap: 8px; }
+  .sheet-tile b { color: var(--red-ink); font-weight: 600; }
+
+  /* ---------- ticker ---------- */
+  .ticker { overflow: hidden; padding: 16px 0; border-block: 1px solid var(--ink); }
+  .ticker-track { display: flex; width: max-content; animation: slide 120s linear infinite; }
+  .ticker ul { display: flex; flex-shrink: 0; }
+  .ticker li {
+    display: flex;
+    align-items: baseline;
+    gap: 10px;
+    padding: 0 28px;
+    white-space: nowrap;
+    font-weight: 600;
+    color: var(--paper);
+    border-right: 1px solid var(--line-dark);
+  }
+  .ticker li .mono { font-size: 0.7rem; color: #7d776c; }
+  .ticker li .mono.red { color: var(--red); }
+  @keyframes slide { to { transform: translateX(-50%); } }
+
+  /* ---------- numbers ---------- */
+  .numbers { padding-top: clamp(48px, 7vw, 88px); }
+  .numbers dl {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    border-top: 2px solid var(--ink);
+  }
+  .numbers dl > div { padding: 18px 16px 0 0; border-right: 1px solid var(--line); }
+  .numbers dl > div:not(:first-child) { padding-left: 20px; }
+  .numbers dl > div:last-child { border-right: 0; }
+  .numbers dt { color: var(--muted); font-size: 0.68rem; }
+  .numbers dd {
+    font-family: var(--font-display);
+    font-stretch: 120%;
     font-weight: 800;
-    line-height: 1.05;
-    margin: 20px 0 24px;
+    font-size: clamp(2.4rem, 5vw, 4rem);
+    line-height: 1;
+    margin-top: 10px;
+    color: var(--ink);
+    letter-spacing: -0.03em;
   }
-  .hero p {
-    font-size: 1.2rem;
-    color: var(--text);
-    line-height: 1.7;
-    margin-bottom: 32px;
+  .numbers dd small { font-size: 0.4em; margin-left: 2px; color: var(--red); }
+
+  /* ---------- services ---------- */
+  .svc-list { border-top: 2px solid var(--ink); }
+  .svc-row {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px minmax(0, 1.1fr) minmax(0, 1.4fr) 110px 32px;
+    align-items: center;
+    gap: 20px;
+    padding: 26px 0;
+    border-bottom: 1px solid var(--line);
+    transition: padding 0.3s var(--ease), background 0.3s;
   }
-  .hero-actions {
-    display: flex;
-    gap: 16px;
-    flex-wrap: wrap;
+  .svc-n { color: var(--muted); }
+  .svc-title {
+    font-family: var(--font-display);
+    font-stretch: 118%;
+    font-weight: 800;
+    font-size: clamp(1.6rem, 3.4vw, 2.75rem);
+    letter-spacing: -0.025em;
+    color: var(--ink);
+    line-height: 1;
+    transition: color 0.2s;
   }
-  .hero-stats {
-    display: flex;
-    gap: 48px;
-    margin-top: 48px;
-    padding-top: 32px;
-    border-top: 1px solid rgba(255,255,255,0.1);
+  .svc-tag { color: var(--muted); }
+  .svc-count { color: var(--muted); font-size: 0.7rem; text-align: right; }
+  .svc-arrow { font-size: 1.6rem; color: var(--ink); transition: transform 0.3s var(--ease), color 0.2s; }
+  .svc-peek {
+    position: absolute;
+    right: 160px;
+    top: 50%;
+    width: 260px;
+    aspect-ratio: 756 / 415;
+    object-fit: cover;
+    opacity: 0;
+    transform: translateY(-50%) rotate(3deg) scale(0.9);
+    transition: opacity 0.25s, transform 0.35s var(--ease);
+    pointer-events: none;
+    z-index: 3;
+    box-shadow: 0 20px 40px -20px rgba(20, 19, 18, 0.6);
+    border: 5px solid var(--card);
   }
-  .stat strong {
-    display: block;
-    font-family: var(--font-heading);
-    font-size: 2rem;
-    color: var(--primary);
-  }
-  .stat span {
-    font-size: 0.85rem;
-    color: var(--text-light);
+  .svc-row:hover .svc-title { color: var(--red); }
+  .svc-row:hover .svc-arrow { transform: translateX(6px); color: var(--red); }
+  @media (hover: hover) and (min-width: 1000px) {
+    .svc-row:hover .svc-peek { opacity: 1; transform: translateY(-50%) rotate(3deg) scale(1); }
   }
 
-  /* Why Choose Us */
-  .why-grid {
+  /* ---------- difference ---------- */
+  .diff-grid {
     display: grid;
-    grid-template-columns: 1.2fr 1fr;
-    gap: 60px;
-    align-items: start;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 0.95fr);
+    gap: clamp(40px, 6vw, 96px);
   }
-  .why-text > p {
-    color: var(--text);
-    margin-bottom: 32px;
-    font-size: 1.05rem;
+  .diff-copy h2 { margin: 20px 0 24px; }
+  .promises { margin-top: 48px; border-top: 1px solid var(--line-dark); }
+  .promises li {
+    display: grid;
+    grid-template-columns: 48px 1fr;
+    gap: 16px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--line-dark);
   }
-  .advantages-list {
-    display: flex;
-    flex-direction: column;
+  .promises li .mono { padding-top: 6px; }
+  .promises h3 { font-size: 1.5rem; font-stretch: 108%; margin-bottom: 8px; }
+  .promises p { color: #a19b8f; }
+  .diff-sticky {
+    position: sticky;
+    top: calc(var(--header-h) + 32px);
+    display: grid;
+    gap: 28px;
+  }
+
+  /* ---------- featured ---------- */
+  .feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
     gap: 20px;
   }
-  .advantage {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
-  }
-  .advantage-num {
-    flex-shrink: 0;
-    width: 42px;
-    height: 42px;
-    background: var(--primary);
-    color: var(--darkest);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 800;
-    font-family: var(--font-heading);
-    font-size: 1rem;
-  }
-  .advantage h4 {
-    font-size: 1.05rem;
-    margin-bottom: 4px;
-  }
-  .advantage p {
-    font-size: 0.9rem;
-    color: var(--text-light);
-    margin: 0;
-  }
-  .why-image img {
-    width: 100%;
-    border-radius: var(--radius-xl);
-    object-fit: cover;
-    max-height: 600px;
-  }
+  .fg-item, .fg-item > :global(a) { height: 100%; }
+  .fg-0 { grid-column: span 2; grid-row: span 2; }
+  .fg-0 :global(.pcard-media) { aspect-ratio: auto; flex: 1; min-height: 320px; }
+  .feature-more { margin-top: 40px; display: flex; justify-content: center; }
 
-  /* CTA */
-  .cta-section {
-    padding: 80px 0;
-    background: var(--dark);
+  /* ---------- process ---------- */
+  .steps {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    border-top: 2px solid var(--ink);
   }
-  .cta-card {
-    background: linear-gradient(135deg, rgba(212,160,60,0.1), rgba(212,160,60,0.03));
-    border: 1px solid var(--primary-border);
-    border-radius: var(--radius-xl);
-    padding: 60px;
+  .steps li {
+    position: relative;
+    padding: 28px 24px 8px 0;
+  }
+  .steps li:not(:last-child) { border-right: 1px solid var(--line); }
+  .steps li:not(:first-child) { padding-left: 24px; }
+  .steps li::before {
+    content: '';
+    position: absolute;
+    top: -7px;
+    left: 0;
+    width: 12px;
+    height: 12px;
+    background: var(--red);
+  }
+  .steps li:not(:first-child)::before { left: 24px; }
+  .step-n {
+    display: block;
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    font-weight: 900;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 1.5px var(--ink);
+    margin-bottom: 20px;
+  }
+  .steps h3 { font-size: 1.35rem; margin-bottom: 8px; }
+  .steps p { color: var(--muted); }
+
+  /* ---------- area ---------- */
+  .area-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+    gap: clamp(40px, 6vw, 96px);
+    align-items: start;
+  }
+  .area h2 { margin-top: 20px; }
+  .counties { display: grid; gap: 32px; }
+  .state h3 { font-size: 0.75rem; color: var(--muted); padding-bottom: 10px; border-bottom: 2px solid var(--ink); }
+  .state li {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    gap: 40px;
+    align-items: baseline;
+    padding: 14px 0;
+    border-bottom: 1px solid var(--line);
+    font-family: var(--font-display);
+    font-stretch: 110%;
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--ink);
   }
-  .cta-content h2 {
-    font-size: 2rem;
-    margin-bottom: 12px;
-  }
-  .cta-content p {
-    color: var(--text);
-    font-size: 1.05rem;
-    max-width: 520px;
-  }
-  .cta-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 12px;
-    flex-shrink: 0;
-  }
+  .state li .mono { font-size: 0.68rem; font-weight: 400; }
 
+  /* ---------- responsive ---------- */
+  @media (max-width: 1080px) {
+    .svc-row { grid-template-columns: 44px minmax(0, 1fr) 100px 28px; }
+    .svc-tag { display: none; }
+    .diff-grid { grid-template-columns: 1fr; }
+    .diff-sticky { position: static; grid-template-columns: 1fr 1fr; align-items: start; }
+  }
   @media (max-width: 900px) {
-    .why-grid { grid-template-columns: 1fr; }
-    .why-image { order: -1; }
-    .cta-card { flex-direction: column; text-align: center; padding: 40px; }
-    .cta-actions { flex-direction: row; }
-    .hero-stats { gap: 24px; }
+    .hero::after { background: linear-gradient(180deg, var(--paper) 50%, rgba(243, 239, 230, 0.2)); }
+    .hero-grid { grid-template-columns: 1fr; gap: 0; min-height: 0; }
+    .hero-copy { padding-bottom: 24px; }
+    .hero-sheets {
+      height: 300px;
+      margin: 0 calc(-1 * var(--gutter)) -40px;
+      transform: rotate(-4deg) scale(1.15);
+    }
+    .numbers dl { grid-template-columns: repeat(3, 1fr); }
+    .numbers dl > div { padding-bottom: 20px; border-bottom: 1px solid var(--line); }
+    .numbers dl > div:nth-child(3) { border-right: 0; }
+    .numbers dl > div:nth-child(4) { padding-left: 0; }
+    .feature-grid { grid-template-columns: 1fr 1fr; }
+    .fg-0 { grid-column: 1 / -1; grid-row: auto; }
+    .fg-0 :global(.pcard-media) { aspect-ratio: 756 / 415; min-height: 0; }
+    .steps { grid-template-columns: 1fr 1fr; }
+    .steps li:nth-child(2) { border-right: 0; }
+    .steps li:nth-child(3) { padding-left: 0; }
+    .steps li:nth-child(3)::before { left: 0; }
+    .area-grid { grid-template-columns: 1fr; }
   }
   @media (max-width: 640px) {
-    .hero-stats { flex-wrap: wrap; gap: 20px; }
-    .stat strong { font-size: 1.5rem; }
-    .cta-actions { flex-direction: column; width: 100%; }
+    .hero-sheets { height: 240px; }
+    .numbers dl { grid-template-columns: 1fr 1fr; }
+    .numbers dl > div { padding-left: 0 !important; border-right: 0; }
+    .numbers dl > div:nth-child(odd) { border-right: 1px solid var(--line); }
+    .numbers dl > div:nth-child(even) { padding-left: 20px !important; }
+    .numbers dl > div:last-child { grid-column: 1 / -1; border-right: 0; }
+    .svc-row { grid-template-columns: 36px minmax(0, 1fr) 24px; gap: 12px; padding: 20px 0; }
+    .svc-count { display: none; }
+    .diff-sticky { grid-template-columns: 1fr; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .steps { grid-template-columns: 1fr; }
+    .steps li { border-right: 0 !important; padding-left: 0 !important; border-bottom: 1px solid var(--line); padding-bottom: 24px; }
+    .steps li::before { left: 0 !important; }
   }
 </style>

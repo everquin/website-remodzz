@@ -5,3 +5,4 @@ dist/
 *.mobirise
 .env
 .env.*
+!.env.example

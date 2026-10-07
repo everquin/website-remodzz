@@ -1,0 +1,26 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { site } from '../data/site';
+---
+
+<Layout title="Page not found">
+  <section class="page-hero grid-bg nf">
+    <div class="wrap">
+      <p class="mono red">Error 404 · Not on the plans</p>
+      <h1 class="display-xl">This room<br />hasn't been built.</h1>
+      <p class="lead">The page you're looking for moved or never existed. Here's where to go instead.</p>
+      <div class="row">
+        <a href="/" class="btn">Home</a>
+        <a href="/portfolio" class="btn btn-line">Projects</a>
+        <a href="/services" class="btn btn-line">Services</a>
+        <a href={site.phoneHref} class="btn btn-red">Call {site.phone}</a>
+      </div>
+    </div>
+  </section>
+</Layout>
+
+<style>
+  .nf { min-height: 80vh; display: flex; align-items: center; border-bottom: 0; }
+  .nf h1 { max-width: none; }
+  .row { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+</style>

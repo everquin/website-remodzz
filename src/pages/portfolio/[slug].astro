@@ -1,0 +1,270 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { services } from '../../data/services';
+import {
+  projects,
+  categoryLabels,
+  stageLabels,
+  sheetPhoto,
+  sheetFull,
+  fieldPhoto,
+  coverOf,
+  type Project,
+  type Stage,
+} from '../../data/projects';
+
+export function getStaticPaths() {
+  return projects.map((p, i) => ({
+    params: { slug: p.slug },
+    props: { project: p, prev: projects[(i - 1 + projects.length) % projects.length], next: projects[(i + 1) % projects.length] },
+  }));
+}
+
+interface Props { project: Project; prev: Project; next: Project }
+const { project: p, prev, next } = Astro.props;
+
+const relatedServices = services.filter((s) => s.categories.some((c) => p.categories.includes(c)));
+const related = projects
+  .filter((o) => o.slug !== p.slug)
+  .map((o) => ({ o, score: o.categories.filter((c) => p.categories.includes(c)).length + (o.town === p.town ? 1 : 0) }))
+  .filter((x) => x.score > 0)
+  .sort((a, b) => b.score - a.score)
+  .slice(0, 3)
+  .map((x) => x.o);
+
+const stageOrder: Stage[] = ['design', 'before', 'construction', 'finished'];
+const field = [...(p.photos || [])].sort((a, b) => stageOrder.indexOf(a.stage) - stageOrder.indexOf(b.stage));
+
+const lbGroup = `job-${p.slug}`;
+---
+
+<Layout title={`${p.title}, ${p.town} ${p.state}`} description={p.summary.slice(0, 158)} image={coverOf(p)}>
+  <section class="page-hero">
+    <div class="wrap">
+      <nav class="crumbs" aria-label="Breadcrumb">
+        <a href="/">Home</a><span aria-hidden="true">/</span><a href="/portfolio">Projects</a><span aria-hidden="true">/</span><span>{p.job}</span>
+      </nav>
+      <div class="head">
+        <div>
+          <p class="job mono">Job {p.job}</p>
+          <h1 class="display-l">{p.title}</h1>
+          <p class="where">{p.town}, {p.state === 'IL' ? 'Illinois' : 'Wisconsin'}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section-sm">
+    <div class="wrap layout">
+      <div class="main">
+        <a href={sheetFull(p.spaces[0].sheet)} data-lightbox={lbGroup} data-caption={`${p.spaces[0].title}: ${p.spaces[0].scope}`} class="hero-img">
+          <img src={sheetPhoto(p.spaces[0].sheet)} alt={`${p.spaces[0].title}, ${p.town}`} width="756" height="415" />
+          <span class="zoom mono">View project sheet ↗</span>
+        </a>
+
+        <p class="summary">{p.summary}</p>
+
+        {p.spaces.length > 1 && (
+          <div class="block">
+            <h2 class="block-title"><span class="mono red">{String(p.spaces.length).padStart(2, '0')}</span> Spaces in this project</h2>
+            <div class="spaces">
+              {p.spaces.slice(1).map((s) => (
+                <a href={sheetFull(s.sheet)} data-lightbox={lbGroup} data-caption={`${s.title}: ${s.scope}`} class="space">
+                  <img src={sheetPhoto(s.sheet)} alt={`${s.title}, ${p.town}`} width="756" height="415" loading="lazy" />
+                  <span class="space-title">{s.title}</span>
+                  <span class="space-scope">{s.scope}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {field.length > 0 && (
+          <div class="block">
+            <h2 class="block-title"><span class="mono red">{String(field.length).padStart(2, '0')}</span> From the field</h2>
+            <div class="stage-photos">
+              {field.map((ph) => (
+                <a href={fieldPhoto(ph.src)} data-lightbox={`${lbGroup}-field`} data-caption={`${stageLabels[ph.stage]}: ${p.title}`} class="field-photo">
+                  <img src={fieldPhoto(ph.src)} alt={`${stageLabels[ph.stage]} photo, ${p.title}`} loading="lazy" />
+                  <span class:list={['stage-tag', 'mono', ph.stage]}>{stageLabels[ph.stage]}</span>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </div>
+
+      <aside class="spec">
+        <div class="spec-card">
+          <h2 class="mono">Project spec</h2>
+          <dl>
+            <div><dt>Job no.</dt><dd class="mono">{p.job}</dd></div>
+            <div><dt>Location</dt><dd>{p.town}, {p.state}</dd></div>
+            <div><dt>Spaces</dt><dd>{p.spaces.length}</dd></div>
+            <div><dt>Type</dt><dd class="tags">{p.categories.map((c) => <a class="tag" href={`/portfolio?type=${c}`}>{categoryLabels[c]}</a>)}</dd></div>
+          </dl>
+          {relatedServices.length > 0 && (
+            <div class="spec-services">
+              <p class="mono">Related services</p>
+              {relatedServices.map((s) => <a href={`/services/${s.slug}`} class="link-arrow">{s.title} →</a>)}
+            </div>
+          )}
+        </div>
+        <div class="spec-cta bg-ink">
+          <p class="mono">Planning something similar?</p>
+          <p class="cta-line">Get a proposal that covers all 54 categories.</p>
+          <a href={`/contact?type=${p.categories[0]}`} class="btn btn-red">Start an estimate <span class="arrow" aria-hidden="true">→</span></a>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <nav class="pager wrap" aria-label="More projects">
+    <a href={`/portfolio/${prev.slug}`} class="pager-link">
+      <span class="mono">← Previous · {prev.job}</span>
+      <span class="pager-title">{prev.title}</span>
+    </a>
+    <a href={`/portfolio/${next.slug}`} class="pager-link next">
+      <span class="mono">Next · {next.job} →</span>
+      <span class="pager-title">{next.title}</span>
+    </a>
+  </nav>
+
+  {related.length > 0 && (
+    <section class="section bg-paper-2">
+      <div class="wrap">
+        <div class="related-head">
+          <h2 class="display-m">Related projects</h2>
+          <a href="/portfolio" class="link-arrow">All projects →</a>
+        </div>
+        <div class="related">
+          {related.map((r) => <ProjectCard project={r} />)}
+        </div>
+      </div>
+    </section>
+  )}
+</Layout>
+
+<style>
+  .job { color: var(--red-ink); font-weight: 600; font-size: 0.85rem; margin-top: 24px; }
+  .page-hero h1 { margin: 12px 0 16px; max-width: 20ch; }
+  .where {
+    font-family: var(--font-display);
+    font-stretch: 110%;
+    font-weight: 600;
+    font-size: 1.25rem;
+    color: var(--muted);
+  }
+  .layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 340px;
+    gap: clamp(32px, 5vw, 64px);
+    align-items: start;
+  }
+  .hero-img { position: relative; display: block; border: 1px solid var(--line); background: var(--card); padding: 8px; }
+  .hero-img img { width: 100%; }
+  .zoom {
+    position: absolute;
+    right: 18px;
+    bottom: 18px;
+    background: var(--ink);
+    color: var(--paper);
+    padding: 6px 10px;
+    font-size: 0.66rem;
+  }
+  .summary {
+    font-size: clamp(1.15rem, 1.7vw, 1.35rem);
+    line-height: 1.55;
+    color: var(--ink);
+    margin: 36px 0 0;
+    max-width: 62ch;
+  }
+  .block { margin-top: 64px; }
+  .block-title {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    font-size: 1.6rem;
+    padding-bottom: 14px;
+    margin-bottom: 24px;
+    border-bottom: 2px solid var(--ink);
+  }
+  .spaces {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr));
+    gap: 24px 20px;
+  }
+  .space { display: grid; gap: 4px; }
+  .space img { width: 100%; aspect-ratio: 756 / 415; object-fit: cover; margin-bottom: 10px; transition: opacity 0.2s; }
+  .space:hover img { opacity: 0.85; }
+  .space-title { font-weight: 700; color: var(--ink); }
+  .space:hover .space-title { color: var(--red-ink); }
+  .space-scope { font-size: 0.9rem; color: var(--muted); }
+  .field-photo { position: relative; display: block; }
+  .stage-tag {
+    position: absolute;
+    left: 8px;
+    bottom: 8px;
+    padding: 4px 8px;
+    font-size: 0.62rem;
+    background: var(--card);
+    color: var(--ink);
+  }
+  .stage-tag.finished { background: var(--red); color: #fff; }
+  .stage-tag.design { background: var(--blue); color: #fff; }
+  .stage-photos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 200px), 1fr));
+    gap: 12px;
+  }
+  .stage-photos img { width: 100%; aspect-ratio: 4 / 3; object-fit: cover; transition: opacity 0.2s; }
+  .stage-photos a:hover img { opacity: 0.85; }
+
+  .spec { position: sticky; top: calc(var(--header-h) + 24px); display: grid; gap: 16px; }
+  .spec-card { background: var(--card); border: 1px solid var(--line); border-top: 3px solid var(--ink); padding: 22px; }
+  .spec-card h2 { font-size: 0.72rem; color: var(--muted); margin-bottom: 8px; font-family: var(--font-mono); font-weight: 500; }
+  .spec-card dl > div {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 12px;
+    padding: 12px 0;
+    border-bottom: 1px dashed var(--line-strong);
+  }
+  .spec-card dt { color: var(--muted); font-size: 0.9rem; }
+  .spec-card dd { font-weight: 600; color: var(--ink); }
+  .tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tags .tag:hover { color: var(--red-ink); border-color: var(--red-ink); }
+  .spec-services { display: grid; gap: 10px; margin-top: 20px; justify-items: start; }
+  .spec-services .mono { color: var(--muted); font-size: 0.68rem; }
+  .spec-cta { padding: 24px; border-radius: var(--radius); display: grid; gap: 12px; justify-items: start; }
+  .spec-cta .mono { color: #a19b8f; font-size: 0.68rem; }
+  .cta-line { font-family: var(--font-display); font-stretch: 110%; font-weight: 700; font-size: 1.3rem; line-height: 1.2; color: var(--paper); margin-bottom: 6px; }
+
+  .pager {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    border-top: 1px solid var(--line);
+    margin-top: clamp(48px, 6vw, 80px);
+  }
+  .pager-link { display: grid; gap: 6px; padding: 28px 24px 32px 0; }
+  .pager-link.next { text-align: right; padding: 28px 0 32px 24px; border-left: 1px solid var(--line); }
+  .pager-link .mono { color: var(--muted); font-size: 0.7rem; }
+  .pager-title { font-family: var(--font-display); font-stretch: 110%; font-weight: 700; font-size: 1.2rem; color: var(--ink); }
+  .pager-link:hover .pager-title { color: var(--red-ink); }
+
+  .related-head { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; margin-bottom: 32px; flex-wrap: wrap; }
+  .related { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+
+  @media (max-width: 960px) {
+    .layout { grid-template-columns: 1fr; }
+    .spec { position: static; grid-template-columns: 1fr 1fr; }
+    .related { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 640px) {
+    .spec { grid-template-columns: 1fr; }
+    .related { grid-template-columns: 1fr; }
+    .pager { grid-template-columns: 1fr; }
+    .pager-link.next { border-left: 0; border-top: 1px solid var(--line); padding-left: 0; text-align: left; }
+  }
+</style>
